@@ -1,0 +1,59 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - inventory
+
+  pencatatan:
+    build: .
+    env_file: .env
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    volumes:
+      - inventory-storage:/var/www/html/storage
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.inventory.rule=Host(`inventory.localhost`) || Host(`localhost`)
+      - traefik.http.routers.inventory.entrypoints=web
+      - traefik.http.services.inventory.loadbalancer.server.port=8000
+    networks:
+      - inventory
+
+  cetak-laporan:
+    build: .
+    env_file: .env
+    command: php artisan queue:work --queue=reports --sleep=2 --tries=3 --timeout=120
+    volumes:
+      - inventory-storage:/var/www/html/storage
+    depends_on:
+      - pencatatan
+    networks:
+      - inventory
+
+  notif-komunikasi:
+    build: .
+    env_file: .env
+    command: php artisan queue:work --queue=notifications --sleep=2 --tries=3 --timeout=90
+    volumes:
+      - inventory-storage:/var/www/html/storage
+    depends_on:
+      - pencatatan
+    networks:
+      - inventory
+
+networks:
+  inventory:
+    driver: bridge
+
+volumes:
+  inventory-storage:
