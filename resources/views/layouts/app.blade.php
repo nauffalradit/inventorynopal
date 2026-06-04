@@ -54,6 +54,10 @@
             <a href="{{ route('products.index') }}" @class(['active' => request()->routeIs('products.*')])>Pencatatan</a>
             <a href="{{ route('reports.index') }}" @class(['active' => request()->routeIs('reports.*')])>Cetak Laporan</a>
             <a href="{{ route('notifications.index') }}" @class(['active' => request()->routeIs('notifications.*')])>Notif & Komunikasi</a>
+            <form class="inline" method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="btn" type="submit">Logout</button>
+            </form>
         </nav>
     </div>
 </header>
