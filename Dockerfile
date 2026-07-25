@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine AS base
+FROM php:8.4-fpm-alpine AS base
 
 RUN apk add --no-cache bash icu-dev libpq-dev libzip-dev oniguruma-dev zip \
     && docker-php-ext-install bcmath intl opcache pdo_pgsql zip

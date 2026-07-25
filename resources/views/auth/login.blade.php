@@ -21,6 +21,10 @@
             <div class="status">{{ session('status') }}</div>
         @endif
 
+        @if (session('error'))
+            <div class="status" style="background:#fef2f2; border-color:#fecaca; color:#991b1b;">{{ session('error') }}</div>
+        @endif
+
         <h1>Nopal A1 Inventory</h1>
         <p>Masuk untuk mengakses dashboard inventory.</p>
         <a href="{{ route('auth.google.redirect') }}">Masuk dengan Google</a>

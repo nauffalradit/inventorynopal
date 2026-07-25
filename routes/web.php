@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MovementController;
 use App\Http\Controllers\NotificationController;
@@ -10,12 +9,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function (): void {
     Route::view('login', 'auth.login')->name('login');
-    Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
-    Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+    Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google.redirect');
+    Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::post('logout', [GoogleAuthController::class, 'logout'])->name('logout');
+    Route::post('logout', [App\Http\Controllers\Auth\GoogleController::class, 'logout'])->name('logout');
 
     Route::get('/', DashboardController::class)->name('dashboard');
 

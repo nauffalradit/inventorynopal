@@ -1,0 +1,178 @@
+--progress is a global compose flag, better use `docker compose --progress xx build ...
+ Image inventorynopal-pencatatan Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 519B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 746B 0.0s done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/composer:2
+#3 DONE 0.0s
+
+#4 [internal] load metadata for docker.io/library/php:8.4-fpm-alpine
+#4 DONE 1.3s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 180B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 DONE 0.0s
+
+#7 FROM docker.io/library/composer:2@sha256:1b73755de4f19775ba6087fd5313664493e06fab72b6fc27dc2044e87bb7c4c3
+#7 resolve docker.io/library/composer:2@sha256:1b73755de4f19775ba6087fd5313664493e06fab72b6fc27dc2044e87bb7c4c3 0.1s done
+#7 DONE 0.1s
+
+#8 [base 1/8] FROM docker.io/library/php:8.4-fpm-alpine@sha256:913ddd6934a805429618a16aa36da47cd8a8aec8b2f111c294936ba4003fded6
+#8 resolve docker.io/library/php:8.4-fpm-alpine@sha256:913ddd6934a805429618a16aa36da47cd8a8aec8b2f111c294936ba4003fded6 0.1s done
+#8 DONE 0.1s
+
+#6 [internal] load build context
+#6 transferring context: 5.30kB 0.0s done
+#6 DONE 0.0s
+
+#9 [base 4/8] COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+#9 CACHED
+
+#10 [base 5/8] COPY composer.json ./
+#10 CACHED
+
+#11 [base 2/8] RUN apk add --no-cache bash icu-dev libpq-dev libzip-dev oniguruma-dev zip     && docker-php-ext-install bcmath intl opcache pdo_pgsql zip
+#11 CACHED
+
+#12 [base 3/8] WORKDIR /var/www/html
+#12 CACHED
+
+#13 [base 6/8] RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --no-scripts
+#13 CACHED
+
+#14 [base 7/8] COPY . .
+#14 DONE 0.1s
+
+#15 [base 8/8] RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader     && mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache     && chown -R www-data:www-data storage bootstrap/cache
+#15 0.585 Installing dependencies from lock file
+#15 0.589 Verifying lock file contents can be installed on current platform.
+#15 0.952 Package operations: 0 installs, 37 updates, 0 removals
+#15 0.957   - Downloading symfony/polyfill-mbstring (v1.38.1)
+#15 0.963   - Downloading vlucas/phpdotenv (v5.6.3)
+#15 0.963   - Downloading symfony/deprecation-contracts (v3.7.0)
+#15 0.964   - Downloading symfony/var-dumper (v7.4.8)
+#15 0.965   - Downloading symfony/polyfill-php83 (v1.38.1)
+#15 0.966   - Downloading symfony/service-contracts (v3.7.0)
+#15 0.967   - Downloading symfony/event-dispatcher-contracts (v3.7.0)
+#15 0.969   - Downloading symfony/event-dispatcher (v8.1.0)
+#15 0.970   - Downloading symfony/mailer (v7.4.12)
+#15 0.971   - Downloading symfony/http-foundation (v7.4.13)
+#15 0.973   - Downloading symfony/error-handler (v7.4.8)
+#15 0.974   - Downloading symfony/http-kernel (v7.4.13)
+#15 0.976   - Downloading symfony/finder (v7.4.8)
+#15 0.977   - Downloading symfony/console (v7.4.13)
+#15 0.977   - Downloading ramsey/uuid (4.9.2)
+#15 0.977   - Downloading symfony/translation-contracts (v3.7.0)
+#15 0.978   - Downloading symfony/translation (v8.1.0)
+#15 0.978   - Downloading nesbot/carbon (3.11.4)
+#15 0.978   - Downloading league/mime-type-detection (1.16.0)
+#15 0.979   - Downloading league/flysystem (3.34.0)
+#15 0.979   - Downloading nette/utils (v4.1.4)
+#15 0.980   - Downloading league/commonmark (2.8.2)
+#15 0.981   - Downloading laravel/serializable-closure (v2.0.13)
+#15 0.981   - Downloading laravel/prompts (v0.3.18)
+#15 0.983   - Downloading guzzlehttp/uri-template (v1.0.6)
+#15 0.983   - Downloading guzzlehttp/psr7 (2.11.0)
+#15 0.984   - Downloading guzzlehttp/promises (2.5.0)
+#15 0.984   - Downloading guzzlehttp/guzzle (7.11.0)
+#15 0.985   - Downloading laravel/framework (v12.61.0)
+#15 0.986   - Downloading masterminds/html5 (2.10.0)
+#15 0.987   - Downloading sabberworm/php-css-parser (v9.3.0)
+#15 0.988   - Downloading dompdf/dompdf (v3.1.5)
+#15 0.988   - Downloading phpseclib/phpseclib (3.0.52)
+#15 0.989   - Downloading firebase/php-jwt (v7.0.5)
+#15 0.990   - Downloading laravel/socialite (v5.28.0)
+#15 0.992   - Downloading nikic/php-parser (v5.7.0)
+#15 0.993   - Downloading psy/psysh (v0.12.23)
+#15 5.465   - Downgrading symfony/polyfill-mbstring (v1.38.2 => v1.38.1): Extracting archive
+#15 5.467   - Downgrading vlucas/phpdotenv (v5.6.4 => v5.6.3): Extracting archive
+#15 5.468   - Downgrading symfony/deprecation-contracts (v3.7.1 => v3.7.0): Extracting archive
+#15 5.479   - Downgrading symfony/var-dumper (v7.4.14 => v7.4.8): Extracting archive
+#15 5.480   - Downgrading symfony/polyfill-php83 (v1.38.2 => v1.38.1): Extracting archive
+#15 5.483   - Downgrading symfony/service-contracts (v3.7.1 => v3.7.0): Extracting archive
+#15 5.485   - Downgrading symfony/event-dispatcher-contracts (v3.7.1 => v3.7.0): Extracting archive
+#15 5.486   - Downgrading symfony/event-dispatcher (v8.1.1 => v8.1.0): Extracting archive
+#15 5.488   - Downgrading symfony/mailer (v7.4.14 => v7.4.12): Extracting archive
+#15 5.490   - Downgrading symfony/http-foundation (v7.4.14 => v7.4.13): Extracting archive
+#15 5.496   - Downgrading symfony/error-handler (v7.4.14 => v7.4.8): Extracting archive
+#15 5.496   - Downgrading symfony/http-kernel (v7.4.14 => v7.4.13): Extracting archive
+#15 5.498   - Downgrading symfony/finder (v7.4.14 => v7.4.8): Extracting archive
+#15 5.498   - Downgrading symfony/console (v7.4.14 => v7.4.13): Extracting archive
+#15 5.498   - Downgrading ramsey/uuid (4.9.3 => 4.9.2): Extracting archive
+#15 5.498   - Downgrading symfony/translation-contracts (v3.7.1 => v3.7.0): Extracting archive
+#15 5.498   - Downgrading symfony/translation (v8.1.1 => v8.1.0): Extracting archive
+#15 5.504   - Downgrading nesbot/carbon (3.13.1 => 3.11.4): Extracting archive
+#15 5.506   - Downgrading league/mime-type-detection (1.17.0 => 1.16.0): Extracting archive
+#15 5.507   - Downgrading league/flysystem (3.35.2 => 3.34.0): Extracting archive
+#15 5.507   - Downgrading nette/utils (v4.1.5 => v4.1.4): Extracting archive
+#15 5.508   - Downgrading league/commonmark (2.8.3 => 2.8.2): Extracting archive
+#15 5.510   - Downgrading laravel/serializable-closure (v2.0.15 => v2.0.13): Extracting archive
+#15 5.510   - Downgrading laravel/prompts (v0.3.21 => v0.3.18): Extracting archive
+#15 5.510   - Downgrading guzzlehttp/uri-template (v1.0.10 => v1.0.6): Extracting archive
+#15 5.510   - Downgrading guzzlehttp/psr7 (2.13.0 => 2.11.0): Extracting archive
+#15 5.510   - Downgrading guzzlehttp/promises (2.5.1 => 2.5.0): Extracting archive
+#15 5.511   - Downgrading guzzlehttp/guzzle (7.15.1 => 7.11.0): Extracting archive
+#15 5.511   - Downgrading laravel/framework (v12.64.0 => v12.61.0): Extracting archive
+#15 5.511   - Downgrading masterminds/html5 (2.10.1 => 2.10.0): Extracting archive
+#15 5.512   - Downgrading sabberworm/php-css-parser (v9.4.0 => v9.3.0): Extracting archive
+#15 5.512   - Downgrading dompdf/dompdf (v3.1.6 => v3.1.5): Extracting archive
+#15 5.513   - Downgrading phpseclib/phpseclib (3.0.55 => 3.0.52): Extracting archive
+#15 5.513   - Downgrading firebase/php-jwt (v7.1.0 => v7.0.5): Extracting archive
+#15 5.514   - Downgrading laravel/socialite (v5.29.0 => v5.28.0): Extracting archive
+#15 5.517   - Downgrading nikic/php-parser (v5.8.0 => v5.7.0): Extracting archive
+#15 5.528   - Downgrading psy/psysh (v0.12.24 => v0.12.23): Extracting archive
+#15 8.301 Generating optimized autoload files
+#15 9.625 > Illuminate\Foundation\ComposerScripts::postAutoloadDump
+#15 9.669 > @php artisan package:discover --ansi
+#15 9.833 
+#15 9.841 In web.php line 28:
+#15 9.841                                                                                
+#15 9.841   Cannot use App\Http\Controllers\Auth\GoogleController as GoogleController b  
+#15 9.841   ecause the name is already in use                                            
+#15 9.841                                                                                
+#15 9.841 
+#15 9.849 Script @php artisan package:discover --ansi handling the post-autoload-dump event returned with error code 255
+#15 ERROR: process "/bin/sh -c composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader     && mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache     && chown -R www-data:www-data storage bootstrap/cache" did not complete successfully: exit code: 255
+------
+ > [base 8/8] RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader     && mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache     && chown -R www-data:www-data storage bootstrap/cache:
+9.625 > Illuminate\Foundation\ComposerScripts::postAutoloadDump
+9.669 > @php artisan package:discover --ansi
+9.833 
+9.841 In web.php line 28:
+9.841                                                                                
+9.841   Cannot use App\Http\Controllers\Auth\GoogleController as GoogleController b  
+9.841   ecause the name is already in use                                            
+9.841                                                                                
+9.841 
+9.849 Script @php artisan package:discover --ansi handling the post-autoload-dump event returned with error code 255
+------
+Dockerfile:13
+
+--------------------
+
+  12 |     COPY . .
+
+  13 | >>> RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader \
+
+  14 | >>>     && mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+
+  15 | >>>     && chown -R www-data:www-data storage bootstrap/cache
+
+  16 |     
+
+--------------------
+
+failed to solve: process "/bin/sh -c composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader     && mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache     && chown -R www-data:www-data storage bootstrap/cache" did not complete successfully: exit code: 255
+
+
+
+View build details: docker-desktop://dashboard/build/default/default/ii22aezqcwlctysfl51ptwcav
+
