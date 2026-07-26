@@ -56,6 +56,7 @@ class ProductController extends Controller
             'unit' => ['required', 'string', 'max:40'],
             'stock' => ['required', 'integer', 'min:0'],
             'minimum_stock' => ['required', 'integer', 'min:0'],
+            'price' => ['required', 'integer', 'min:0'],
             'location' => ['nullable', 'string', 'max:120'],
         ]);
     }

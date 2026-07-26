@@ -63,6 +63,7 @@
         <nav>
             <a href="{{ route('dashboard') }}" @class(['active' => request()->routeIs('dashboard')])><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
             <a href="{{ route('products.index') }}" @class(['active' => request()->routeIs('products.*')])><svg class="nav-icon" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4-9-4Z"/><path d="m3 12 9 4 9-4M3 17l9 4 9-4"/></svg>Pencatatan</a>
+            <a href="{{ route('orders.index') }}" @class(['active' => request()->routeIs('orders.*')])><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 6h18M6 6l1 15h10l1-15M9 10v7M15 10v7"/></svg>Penjualan & Pembayaran</a>
             <a href="{{ route('reports.index') }}" @class(['active' => request()->routeIs('reports.*')])><svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 2h9l3 3v17H6z"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>Cetak Laporan</a>
             <a href="{{ route('notifications.index') }}" @class(['active' => request()->routeIs('notifications.*')])><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>Notif & Komunikasi</a>
         </nav>

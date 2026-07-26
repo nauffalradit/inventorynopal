@@ -1,0 +1,4 @@
+@extends('layouts.app')
+@section('content')
+<h1>{{ $order->number }}</h1><p class="muted">{{ $order->customer_name }} · {{ $order->customer_email }}</p><section class="card"><table><thead><tr><th>Barang</th><th>Harga</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>@foreach($order->items as $item)<tr><td>{{ $item->product_name }}</td><td>Rp {{ number_format($item->unit_price,0,',','.') }}</td><td>{{ $item->quantity }}</td><td>Rp {{ number_format($item->subtotal,0,',','.') }}</td></tr>@endforeach</tbody></table><div class="actions" style="justify-content:space-between"><strong>Total: Rp {{ number_format($order->total_amount,0,',','.') }}</strong>@if($order->status==='pending')<form method="post" action="{{ route('orders.pay',$order) }}">@csrf<button class="btn primary">Bayar dengan DOKU</button></form>@endif</div></section>
+@endsection

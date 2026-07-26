@@ -24,6 +24,10 @@
         <input type="number" name="minimum_stock" min="0" value="{{ old('minimum_stock', $product->minimum_stock ?? 0) }}" required>
         @error('minimum_stock') <span class="error">{{ $message }}</span> @enderror
     </label>
+    <label>Harga Jual (Rp)
+        <input type="number" name="price" min="0" value="{{ old('price', $product->price ?? 0) }}" required>
+        @error('price') <span class="error">{{ $message }}</span> @enderror
+    </label>
     <label>Lokasi
         <input name="location" value="{{ old('location', $product->location ?? '') }}">
         @error('location') <span class="error">{{ $message }}</span> @enderror
