@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-use Exception;
+use Throwable;
 
 class GoogleController extends Controller
 {
@@ -22,7 +22,6 @@ class GoogleController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
-            
             // Mencari apakah user sudah terdaftar di database kita
             $user = User::where('google_id', $googleUser->id)
                         ->orWhere('email', $googleUser->email)
@@ -47,11 +46,11 @@ class GoogleController extends Controller
 
             request()->session()->regenerate();
 
-            // Dashboard aplikasi berada pada route bernama "dashboard" (/).
             return redirect()->intended(route('dashboard'));
 
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Log::error('Google login failed.', ['exception' => $e]);
+
             return redirect('/login')->with('error', 'Gagal login menggunakan Google.');
         }
     }
