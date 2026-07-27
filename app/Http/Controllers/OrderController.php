@@ -29,7 +29,7 @@ class OrderController extends Controller
     public function pay(Order $order, DokuCheckout $doku)
     {
         abort_unless($order->status === 'pending', 422);
-        try { $result = $doku->create($order); abort_if(blank($result['url']), 502, 'DOKU tidak mengirim payment URL.'); Payment::updateOrCreate(['invoice_number'=>$order->number], ['order_id'=>$order->id,'request_id'=>$result['request_id'],'amount'=>$order->total_amount,'status'=>'pending','checkout_url'=>$result['url'],'gateway_response'=>$result['response']]); return redirect()->away($result['url']); }
+        try { $result = $doku->create($order); abort_if(blank($result['url']), 502, 'DOKU tidak mengirim payment URL.'); Payment::updateOrCreate(['invoice_number'=>$order->number], ['order_id'=>$order->id,'request_id'=>$result['request_id'],'amount'=>$order->total_amount,'status'=>'pending','checkout_url'=>$result['url'],'gateway_response'=>$result['response']]); return to_route('orders.show', $order)->with('status', 'Checkout DOKU dibuat. Buka checkout, lalu gunakan simulator sandbox untuk menyelesaikan pembayaran.'); }
         catch (\Throwable $e) { report($e); return back()->with('error', 'Checkout DOKU gagal dibuat. Periksa DOKU_CLIENT_ID dan DOKU_SECRET_KEY.'); }
     }
 }

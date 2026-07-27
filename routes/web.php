@@ -6,6 +6,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\DokuNotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function (): void {
@@ -13,6 +14,8 @@ Route::middleware('guest')->group(function (): void {
     Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google.redirect');
     Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
+
+Route::post('payments/doku/notification', DokuNotificationController::class)->name('doku.notification');
 
 Route::middleware('auth')->group(function (): void {
     Route::post('logout', [App\Http\Controllers\Auth\GoogleController::class, 'logout'])->name('logout');

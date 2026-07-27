@@ -9,6 +9,20 @@ use RuntimeException;
 
 class DokuCheckout
 {
+    public function notificationIsValid(string $rawBody, array $headers, string $target): bool
+    {
+        $clientId = $headers['client-id'][0] ?? '';
+        $requestId = $headers['request-id'][0] ?? '';
+        $timestamp = $headers['request-timestamp'][0] ?? '';
+        $signature = $headers['signature'][0] ?? '';
+        $secret = config('services.doku.secret_key');
+        if (blank($clientId) || blank($requestId) || blank($timestamp) || blank($signature) || blank($secret)) return false;
+        $digest = base64_encode(hash('sha256', $rawBody, true));
+        $component = "Client-Id:$clientId\nRequest-Id:$requestId\nRequest-Timestamp:$timestamp\nRequest-Target:$target\nDigest:$digest";
+        $expected = 'HMACSHA256='.base64_encode(hash_hmac('sha256', $component, $secret, true));
+        return hash_equals($expected, $signature);
+    }
+
     public function create(Order $order): array
     {
         $clientId = config('services.doku.client_id');
