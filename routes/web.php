@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('movements', [MovementController::class, 'store'])->name('movements.store');
     Route::resource('reports', ReportController::class)->only(['index', 'store', 'show']);
     Route::resource('notifications', NotificationController::class)->only(['index', 'store']);
-    Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
     Route::post('orders/{order}/pay', [OrderController::class, 'pay'])->name('orders.pay');
+    Route::post('orders/{order}/refresh-payment', [OrderController::class, 'refreshPayment'])->name('orders.refresh-payment');
 });

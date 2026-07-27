@@ -9,6 +9,22 @@ use RuntimeException;
 
 class DokuCheckout
 {
+    public function status(string $invoice): array
+    {
+        $clientId = config('services.doku.client_id');
+        $secret = config('services.doku.secret_key');
+        if (blank($clientId) || blank($secret)) throw new RuntimeException('Konfigurasi DOKU sandbox belum lengkap.');
+        $requestId = (string) Str::uuid();
+        $timestamp = now('UTC')->format('Y-m-d\\TH:i:s\\Z');
+        $target = '/orders/v1/status/'.$invoice;
+        $component = "Client-Id:$clientId\nRequest-Id:$requestId\nRequest-Timestamp:$timestamp\nRequest-Target:$target";
+        $signature = 'HMACSHA256='.base64_encode(hash_hmac('sha256', $component, $secret, true));
+        $baseUrl = config('services.doku.sandbox') ? 'https://api-sandbox.doku.com' : 'https://api.doku.com';
+        $response = Http::withHeaders(['Client-Id'=>$clientId, 'Request-Id'=>$requestId, 'Request-Timestamp'=>$timestamp, 'Signature'=>$signature])->get($baseUrl.$target);
+        if ($response->failed()) throw new RuntimeException('Status pembayaran DOKU belum tersedia.');
+        return $response->json();
+    }
+
     public function notificationIsValid(string $rawBody, array $headers, string $target): bool
     {
         $clientId = $headers['client-id'][0] ?? '';
