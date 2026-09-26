@@ -13,15 +13,20 @@ class DokuCheckout
     {
         $clientId = config('services.doku.client_id');
         $secret = config('services.doku.secret_key');
-        if (blank($clientId) || blank($secret)) throw new RuntimeException('Konfigurasi DOKU sandbox belum lengkap.');
+        if (blank($clientId) || blank($secret)) {
+            throw new RuntimeException('Konfigurasi DOKU sandbox belum lengkap.');
+        }
         $requestId = (string) Str::uuid();
         $timestamp = now('UTC')->format('Y-m-d\\TH:i:s\\Z');
         $target = '/orders/v1/status/'.$invoice;
         $component = "Client-Id:$clientId\nRequest-Id:$requestId\nRequest-Timestamp:$timestamp\nRequest-Target:$target";
         $signature = 'HMACSHA256='.base64_encode(hash_hmac('sha256', $component, $secret, true));
         $baseUrl = config('services.doku.sandbox') ? 'https://api-sandbox.doku.com' : 'https://api.doku.com';
-        $response = Http::withHeaders(['Client-Id'=>$clientId, 'Request-Id'=>$requestId, 'Request-Timestamp'=>$timestamp, 'Signature'=>$signature])->get($baseUrl.$target);
-        if ($response->failed()) throw new RuntimeException('Status pembayaran DOKU belum tersedia.');
+        $response = Http::withHeaders(['Client-Id' => $clientId, 'Request-Id' => $requestId, 'Request-Timestamp' => $timestamp, 'Signature' => $signature])->get($baseUrl.$target);
+        if ($response->failed()) {
+            throw new RuntimeException('Status pembayaran DOKU belum tersedia.');
+        }
+
         return $response->json();
     }
 
@@ -32,10 +37,13 @@ class DokuCheckout
         $timestamp = $headers['request-timestamp'][0] ?? '';
         $signature = $headers['signature'][0] ?? '';
         $secret = config('services.doku.secret_key');
-        if (blank($clientId) || blank($requestId) || blank($timestamp) || blank($signature) || blank($secret)) return false;
+        if (blank($clientId) || blank($requestId) || blank($timestamp) || blank($signature) || blank($secret)) {
+            return false;
+        }
         $digest = base64_encode(hash('sha256', $rawBody, true));
         $component = "Client-Id:$clientId\nRequest-Id:$requestId\nRequest-Timestamp:$timestamp\nRequest-Target:$target\nDigest:$digest";
         $expected = 'HMACSHA256='.base64_encode(hash_hmac('sha256', $component, $secret, true));
+
         return hash_equals($expected, $signature);
     }
 
@@ -70,7 +78,10 @@ class DokuCheckout
         $response = Http::withBody($json, 'application/json')->withHeaders([
             'Client-Id' => $clientId, 'Request-Id' => $requestId, 'Request-Timestamp' => $timestamp, 'Signature' => $signature,
         ])->post($baseUrl.$target);
-        if ($response->failed()) throw new RuntimeException('DOKU Checkout gagal dibuat.');
+        if ($response->failed()) {
+            throw new RuntimeException('DOKU Checkout gagal dibuat.');
+        }
+
         return ['request_id' => $requestId, 'response' => $response->json(), 'url' => data_get($response->json(), 'response.payment.url')];
     }
 }

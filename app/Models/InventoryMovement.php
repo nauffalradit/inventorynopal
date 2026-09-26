@@ -12,6 +12,7 @@ class InventoryMovement extends Model
 
     protected $fillable = [
         'product_id',
+        'created_by',
         'type',
         'quantity',
         'balance_after',
@@ -21,5 +22,10 @@ class InventoryMovement extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

@@ -3,6 +3,7 @@
 @section('content')
     <h1>Notif & Komunikasi</h1>
 
+    @if(auth()->user()?->isAdmin())
     <section class="card" style="margin-bottom:14px">
         <h2>Kirim Notifikasi</h2>
         <form method="post" action="{{ route('notifications.store') }}">
@@ -28,6 +29,7 @@
             <div class="actions"><button class="btn primary" type="submit">Kirim</button></div>
         </form>
     </section>
+    @endif
 
     <table>
         <thead><tr><th>Channel</th><th>Penerima</th><th>Subjek</th><th>Status</th><th>Waktu</th></tr></thead>

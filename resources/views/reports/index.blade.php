@@ -3,10 +3,12 @@
 @section('content')
     <div class="actions" style="justify-content:space-between; margin-top:0">
         <h1 style="margin:0">Cetak Laporan</h1>
+        @if(auth()->user()?->isAdmin())
         <form method="post" action="{{ route('reports.store') }}">
             @csrf
             <button class="btn primary" type="submit">Buat Laporan PDF</button>
         </form>
+        @endif
     </div>
 
     <table>

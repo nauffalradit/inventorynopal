@@ -7,14 +7,16 @@
         <div class="card metric">Jenis Barang<strong>{{ number_format($productCount) }}</strong></div>
         <div class="card metric">Total Stok<strong>{{ number_format($totalStock) }}</strong></div>
         <div class="card metric">Stok Menipis<strong>{{ number_format($lowStockCount) }}</strong></div>
+        @if($isAdminView ?? true)
         <div class="card metric">Laporan Pending<strong>{{ number_format($pendingReports) }}</strong></div>
+        @endif
     </section>
 
     <section class="grid two" style="margin-top:14px">
         <div class="card">
             <h2>Mutasi Terakhir</h2>
             <table>
-                <thead><tr><th>Barang</th><th>Tipe</th><th>Qty</th><th>Sisa</th><th>Waktu</th></tr></thead>
+                <thead><tr><th>Barang</th><th>Tipe</th><th>Qty</th><th>Sisa</th><th>Oleh</th><th>Waktu</th></tr></thead>
                 <tbody>
                 @forelse ($recentMovements as $movement)
                     <tr>
@@ -22,10 +24,11 @@
                         <td><span class="badge">{{ $movement->type }}</span></td>
                         <td>{{ $movement->quantity }}</td>
                         <td>{{ $movement->balance_after }}</td>
+                        <td>{{ auth()->user()?->isAdmin() ? ($movement->creator?->name ?? '—') : '—' }}</td>
                         <td>{{ $movement->created_at->format('d M Y H:i') }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="muted">Belum ada mutasi.</td></tr>
+                    <tr><td colspan="6" class="muted">Belum ada mutasi.</td></tr>
                 @endforelse
                 </tbody>
             </table>

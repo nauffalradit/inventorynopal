@@ -2,9 +2,20 @@
 /node_modules
 
 .env
+.env.new
 
 /storage/*.key
+/storage/app/reports/*
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*.php
 
 /bootstrap/cache/*.php
 
 .phpunit.result.cache
+
+# tooling lokal — jangan commit
+composer.phar
+composer-setup.php
+build-output.txt

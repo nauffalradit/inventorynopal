@@ -5,52 +5,80 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
     public function index(): View
     {
-        return view('products.index', [
-            'products' => Product::latest()->paginate(15),
-        ]);
+        // Keep All: paginate cache 30s per page untuk percepat pindah page & refresh
+        $page = (int) request()->input('page', 1);
+        $products = Cache::remember("products:index:page:$page", 30, fn () => Product::latest()->paginate(15)
+        );
+
+        return view('products.index', compact('products'));
     }
 
     public function create(): View
     {
+        Gate::authorize('admin');
+
         return view('products.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        Product::create($this->validated($request));
+        Gate::authorize('admin');
+        Product::create($this->validated($request, null));
+        DashboardController::flushDashboard();
+        $this->flushProductIndexCache();
 
         return to_route('products.index')->with('status', 'Barang berhasil ditambahkan.');
     }
 
     public function edit(Product $product): View
     {
+        Gate::authorize('admin');
+
         return view('products.edit', compact('product'));
     }
 
     public function update(Request $request, Product $product): RedirectResponse
     {
-        $product->update($this->validated($request));
+        Gate::authorize('admin');
+        $product->update($this->validated($request, $product));
+        DashboardController::flushDashboard();
+        $this->flushProductIndexCache();
 
         return to_route('products.index')->with('status', 'Barang berhasil diperbarui.');
     }
 
     public function destroy(Product $product): RedirectResponse
     {
+        Gate::authorize('admin');
         $product->delete();
+        DashboardController::flushDashboard();
+        $this->flushProductIndexCache();
 
         return to_route('products.index')->with('status', 'Barang berhasil dihapus.');
     }
 
-    private function validated(Request $request): array
+    private function flushProductIndexCache(): void
     {
+        // file driver tidak support tags — flush key page 1..20 yang mungkin ada
+        for ($i = 1; $i <= 20; $i++) {
+            Cache::forget("products:index:page:$i");
+        }
+    }
+
+    private function validated(Request $request, ?Product $product = null): array
+    {
+        $skuRule = ['required', 'string', 'max:80', 'unique:products,sku'.($product ? ','.$product->id : '')];
+
         return $request->validate([
-            'sku' => ['required', 'string', 'max:80'],
+            'sku' => $skuRule,
             'name' => ['required', 'string', 'max:160'],
             'category' => ['nullable', 'string', 'max:120'],
             'unit' => ['required', 'string', 'max:40'],

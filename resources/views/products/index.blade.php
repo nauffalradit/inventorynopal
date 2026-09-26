@@ -3,7 +3,9 @@
 @section('content')
     <div class="actions" style="justify-content:space-between; margin-top:0">
         <h1 style="margin:0">Pencatatan Barang</h1>
+        @if(auth()->user()?->isAdmin())
         <a class="btn primary" href="{{ route('products.create') }}">Tambah Barang</a>
+        @endif
     </div>
 
     <section class="card" style="margin-bottom:14px">
@@ -22,7 +24,9 @@
                     <select name="type" required>
                         <option value="in">Masuk</option>
                         <option value="out">Keluar</option>
+                        @if(auth()->user()?->isAdmin())
                         <option value="adjustment">Penyesuaian</option>
+                        @endif
                     </select>
                 </label>
                 <label>Jumlah
@@ -50,12 +54,16 @@
                 <td>{{ $product->minimum_stock }}</td>
                 <td>{{ $product->location ?: '-' }}</td>
                 <td>
+                    @if(auth()->user()?->isAdmin())
                     <a class="btn" href="{{ route('products.edit', $product) }}">Edit</a>
                     <form class="inline" method="post" action="{{ route('products.destroy', $product) }}">
                         @csrf
                         @method('DELETE')
                         <button class="btn" type="submit">Hapus</button>
                     </form>
+                    @else
+                    <span class="muted">—</span>
+                    @endif
                 </td>
             </tr>
         @empty

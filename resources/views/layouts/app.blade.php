@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }} · Inventory</title>
+    <link rel="prefetch" href="{{ route('dashboard') }}">
+    <link rel="prefetch" href="{{ route('products.index') }}">
     <style>
         :root { --navy:#17213a; --navy-2:#222e4b; --accent:#5b5ce2; --accent-soft:#eeefff; --ink:#19233d; --muted:#7c879d; --line:#e8ebf2; --surface:#fff; --canvas:#f7f8fc; --danger:#d6485d; --success:#1a9b73; }
         * { box-sizing:border-box; }
@@ -51,6 +53,10 @@
         th,td { padding:13px 14px; border-bottom:1px solid #edf0f5; text-align:left; vertical-align:middle; } th { color:#8a94a8; background:#fafbfe; font-size:10px; font-weight:750; letter-spacing:.08em; text-transform:uppercase; } tr:last-child td { border-bottom:0; } tbody tr:hover td { background:#fcfcff; }
         input,select,textarea { width:100%; min-height:41px; padding:9px 11px; border:1px solid #dfe4ed; border-radius:8px; outline:0; color:var(--ink); background:#fff; font:inherit; } input:focus,select:focus,textarea:focus { border-color:#9292f1; box-shadow:0 0 0 3px rgba(91,92,226,.1); } textarea { min-height:96px; resize:vertical; }
         label { display:grid; gap:7px; color:#65728a; font-size:12px; font-weight:650; }.form-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }.inline { display:inline; }.status { margin-bottom:18px; padding:11px 13px; border:1px solid #a9e6cc; border-radius:10px; color:#137354; background:#ecfdf6; }.error { margin-top:4px; color:var(--danger); font-size:12px; }.badge { display:inline-flex; align-items:center; padding:4px 9px; border-radius:999px; color:#5656bd; background:#f0f0ff; font-size:11px; font-weight:700; text-transform:capitalize; }.danger { color:var(--danger); }.muted { color:var(--muted); }
+        #nprogress{position:fixed;top:0;left:0;right:0;height:3px;z-index:9999;pointer-events:none;opacity:0;transition:opacity .2s}
+        #nprogress .bar{height:100%;width:100%;background:linear-gradient(90deg,var(--accent),#8b8cff);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+        #nprogress.loading{opacity:1}.skeleton{animation:shimmer 1.1s infinite linear;background:linear-gradient(90deg,#eef1f6 25%,#f7f8fc 37%,#eef1f6 63%);background-size:400% 100%}
+        @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
         @media (max-width:1050px) { .sidebar { width:218px; flex-basis:218px; }.topbar { padding:0 26px; } main { padding:28px 26px 40px; }.stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
         @media (max-width:760px) { .app-shell { display:block; }.sidebar { width:100%; min-height:0; position:relative; padding:16px; }.brand { padding:0 5px 14px; }.nav-label,.sidebar-footer { display:none; } nav { display:flex; overflow:auto; gap:6px; } nav a { flex:0 0 auto; padding:8px 10px; font-size:12px; }.nav-icon { width:16px; height:16px; }.topbar { height:58px; padding:0 18px; }.date { display:none; } main { padding:24px 18px 36px; } h1 { font-size:23px; }.stats,.two,.form-grid { grid-template-columns:1fr; }.card { padding:16px; } table { display:block; overflow-x:auto; white-space:nowrap; } }
     </style>
@@ -68,7 +74,12 @@
             <a href="{{ route('notifications.index') }}" @class(['active' => request()->routeIs('notifications.*')])><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>Notif & Komunikasi</a>
         </nav>
         <div class="sidebar-footer">
-            <div class="user-card"><div class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()?->name ?? 'U', 0, 1)) }}</div><div><div class="user-name">{{ auth()->user()?->name ?? 'Pengguna' }}</div><div class="user-role">Administrator</div></div></div>
+            <div class="user-card"><div class="avatar">{{ mb_strtoupper(mb_substr(auth()->user()?->name ?? 'U', 0, 1)) }}</div><div><div class="user-name">{{ auth()->user()?->name ?? 'Pengguna' }}</div><div class="user-role">{{ auth()->user()?->isAdmin() ? 'Administrator' : 'Staff' }}</div></div></div>
+            @if(auth()->user()?->isAdmin())
+            <nav style="margin-bottom:12px">
+                <a href="{{ route('admin.users.index') }}" @class(['active' => request()->routeIs('admin.users.*')])><svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Kelola User</a>
+            </nav>
+            @endif
             <form method="POST" action="{{ route('logout') }}">@csrf<button class="logout" type="submit"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5M15 12H3M21 3v18"/></svg>Logout</button></form>
         </div>
     </aside>
@@ -76,9 +87,63 @@
         <header class="topbar"><div class="crumb">Inventory / <strong>{{ request()->routeIs('dashboard') ? 'Dashboard' : 'Workspace' }}</strong></div><div class="topbar-right"><span class="date">{{ now()->translatedFormat('l, d F Y') }}</span><span class="bell"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span></div></header>
         <main>
             @if (session('status'))<div class="status">{{ session('status') }}</div>@endif
+            @if (session('error'))<div class="status" style="background:#fef2f2;border-color:#fecaca;color:#991b1b">{{ session('error') }}</div>@endif
+            @if ($errors->any())<div class="status" style="background:#fef2f2;border-color:#fecaca;color:#991b1b">{{ $errors->first() }}</div>@endif
             @yield('content')
         </main>
     </div>
 </div>
+<div id="nprogress"><div class="bar"></div></div>
+<script>
+// Instant navigation + prefetch — bikin pindah page terasa instan meski Neon 200ms
+(() => {
+  const bar = document.querySelector('#nprogress .bar');
+  const nprogress = document.getElementById('nprogress');
+  let loading = false;
+  const setProgress = (p) => { bar.style.transform = `scaleX(${p})`; };
+  const start = () => { if(loading) return; loading=true; nprogress.classList.add('loading'); setProgress(0.35); setTimeout(()=>setProgress(0.7),120); };
+  const done = () => { setProgress(1); setTimeout(()=>{ nprogress.classList.remove('loading'); setProgress(0); loading=false; }, 220); };
+  const isInternal = (a) => a.host === location.host && !a.hasAttribute('target') && !a.href.includes('#') && !a.href.includes('logout');
+  const swapMain = (html, url) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const newMain = doc.querySelector('main');
+    const curMain = document.querySelector('main');
+    if (!newMain || !curMain) return false;
+    curMain.innerHTML = newMain.innerHTML;
+    document.title = doc.title;
+    // update active nav
+    document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('active', a.href===url || (url!==location.href && a.getAttribute('href')===new URL(url).pathname)));
+    // push crumb
+    const crumbStrong = document.querySelector('.crumb strong');
+    if (crumbStrong) crumbStrong.textContent = doc.querySelector('.crumb strong')?.textContent || crumbStrong.textContent;
+    history.pushState({}, '', url);
+    window.scrollTo(0,0);
+    return true;
+  };
+  document.addEventListener('click', async (e) => {
+    const a = e.target.closest('nav a, a.btn');
+    if (!a || !isInternal(a)) return;
+    // hanya untuk GET page (bukan form POST)
+    if (a.tagName==='A' && a.href && a.getAttribute('href').startsWith('/')) {
+      e.preventDefault();
+      const url = a.href;
+      start();
+      try {
+        const res = await fetch(url, {headers:{'X-Requested-With':'fetch','Accept':'text/html'}});
+        if (!res.ok) throw 0;
+        const html = await res.text();
+        if (!swapMain(html, url)) location.href = url;
+      } catch { location.href = url; }
+      done();
+    }
+  });
+  // prefetch on hover + idle
+  const prefetch = (href) => { if(document.querySelector(`link[rel="prefetch"][href="${href}"]`)) return; const l=document.createElement('link'); l.rel='prefetch'; l.href=href; document.head.appendChild(l); fetch(href,{headers:{'X-Prefetch':'1'}}).catch(()=>{}); };
+  document.querySelectorAll('nav a').forEach(a=>a.addEventListener('mouseenter',()=>prefetch(a.href),{once:true}));
+  // skeleton on refresh (F5): show bar immediately
+  window.addEventListener('beforeunload', start);
+  window.addEventListener('popstate', () => location.reload());
+})();
+</script>
 </body>
 </html>

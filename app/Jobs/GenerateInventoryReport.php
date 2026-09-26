@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\DashboardController;
 use App\Models\Product;
 use App\Models\Report;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class GenerateInventoryReport implements ShouldQueue
@@ -35,10 +37,19 @@ class GenerateInventoryReport implements ShouldQueue
             'file_path' => $path,
             'generated_at' => now(),
         ]);
+
+        DashboardController::flushDashboard();
+        for ($i = 1; $i <= 20; $i++) {
+            Cache::forget("reports:index:page:$i");
+        }
     }
 
     public function failed(): void
     {
         $this->report->update(['status' => 'failed']);
+        DashboardController::flushDashboard();
+        for ($i = 1; $i <= 20; $i++) {
+            Cache::forget("reports:index:page:$i");
+        }
     }
 }

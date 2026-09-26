@@ -9,7 +9,7 @@ return [
     'connection' => env('SESSION_CONNECTION'),
     'table' => env('SESSION_TABLE', 'sessions'),
     'store' => env('SESSION_STORE'),
-    'lottery' => [2, 100],
+    'lottery' => [1, 500],
     'cookie' => env('SESSION_COOKIE', 'inventory_session'),
     'path' => '/',
     'domain' => env('SESSION_DOMAIN'),
