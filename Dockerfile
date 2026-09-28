@@ -20,6 +20,7 @@ RUN composer dump-autoload --no-dev --optimize \
 # Cache config/route/view untuk prod (diabaikan jika APP_ENV != production saat runtime)
 RUN if [ "$APP_ENV" = "production" ]; then php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan event:cache; fi || true
 
-USER www-data
-
-CMD ["sh", "-c", "php artisan storage:link --quiet || true; php artisan migrate --force --quiet; php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
+# Railway Volume di-mount milik root + menutupi folder storage bawaan image,
+# jadi container jalan sebagai root agar bisa tulis (mkdir) di atas Volume.
+# (Risiko negligible untuk demo portfolio; tanpa ini www-data = Permission denied.)
+CMD ["sh", "-c", "mkdir -p storage/app/public storage/app/reports storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache; php artisan storage:link --quiet || true; php artisan migrate --force --quiet; php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
