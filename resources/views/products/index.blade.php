@@ -42,11 +42,18 @@
 
     <table>
         <thead>
-            <tr><th>SKU</th><th>Nama</th><th>Kategori</th><th>Stok</th><th>Minimum</th><th>Lokasi</th><th>Aksi</th></tr>
+            <tr><th>Foto</th><th>SKU</th><th>Nama</th><th>Kategori</th><th>Stok</th><th>Minimum</th><th>Lokasi</th><th>Aksi</th></tr>
         </thead>
         <tbody>
         @forelse ($products as $product)
             <tr>
+                <td>
+                    @if($product->image_path)
+                        <img src="{{ asset('storage/'.$product->image_path) }}" alt="Foto {{ $product->name }}" style="width:48px;height:48px;object-fit:cover;border-radius:8px">
+                    @else
+                        <span class="muted">—</span>
+                    @endif
+                </td>
                 <td>{{ $product->sku }}</td>
                 <td>{{ $product->name }}</td>
                 <td>{{ $product->category ?: '-' }}</td>
@@ -67,7 +74,7 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="7" class="muted">Belum ada barang.</td></tr>
+            <tr><td colspan="8" class="muted">Belum ada barang.</td></tr>
         @endforelse
         </tbody>
     </table>

@@ -19,6 +19,7 @@ class Product extends Model
         'minimum_stock',
         'price',
         'location',
+        'image_path',
     ];
 
     public function movements(): HasMany

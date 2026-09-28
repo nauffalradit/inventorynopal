@@ -3,7 +3,7 @@
 @section('content')
     <h1>Tambah Barang</h1>
     <div class="card">
-        <form method="post" action="{{ route('products.store') }}">
+        <form method="post" action="{{ route('products.store') }}" enctype="multipart/form-data">
             @include('products._form')
         </form>
     </div>

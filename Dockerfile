@@ -22,4 +22,4 @@ RUN if [ "$APP_ENV" = "production" ]; then php artisan config:cache && php artis
 
 USER www-data
 
-CMD ["sh", "-c", "php artisan migrate --force --quiet; php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
+CMD ["sh", "-c", "php artisan storage:link --quiet || true; php artisan migrate --force --quiet; php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]

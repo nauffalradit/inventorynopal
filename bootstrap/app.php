@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Railway/proxy: hanya terima HTTPS dari proxy agar route()/asset() https (hindari warning "not secure")
+        $middleware->trustProxies(at: '*');
         $middleware->validateCsrfTokens(except: ['payments/doku/notification']);
         $middleware->alias([
             'active' => EnsureActive::class,

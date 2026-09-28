@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -31,7 +32,11 @@ class ProductController extends Controller
     public function store(Request $request): RedirectResponse
     {
         Gate::authorize('admin');
-        Product::create($this->validated($request, null));
+        $data = $this->validated($request, null);
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('products', 'public');
+        }
+        Product::create($data);
         DashboardController::flushDashboard();
         $this->flushProductIndexCache();
 
@@ -48,7 +53,14 @@ class ProductController extends Controller
     public function update(Request $request, Product $product): RedirectResponse
     {
         Gate::authorize('admin');
-        $product->update($this->validated($request, $product));
+        $data = $this->validated($request, $product);
+        if ($request->hasFile('image')) {
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+            $data['image_path'] = $request->file('image')->store('products', 'public');
+        }
+        $product->update($data);
         DashboardController::flushDashboard();
         $this->flushProductIndexCache();
 
@@ -58,6 +70,9 @@ class ProductController extends Controller
     public function destroy(Product $product): RedirectResponse
     {
         Gate::authorize('admin');
+        if ($product->image_path) {
+            Storage::disk('public')->delete($product->image_path);
+        }
         $product->delete();
         DashboardController::flushDashboard();
         $this->flushProductIndexCache();
@@ -86,6 +101,7 @@ class ProductController extends Controller
             'minimum_stock' => ['required', 'integer', 'min:0'],
             'price' => ['required', 'integer', 'min:0'],
             'location' => ['nullable', 'string', 'max:120'],
+            'image' => ['nullable', 'image', 'max:2048'],
         ]);
     }
 }
