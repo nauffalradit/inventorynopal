@@ -50,4 +50,22 @@
             </table>
         </div>
     </section>
+    <section class="card" style="margin-top:14px">
+        <h2>Perlu Restock ⚠️</h2>
+        <table>
+            <thead><tr><th>SKU</th><th>Nama</th><th>Stok</th><th>Minimum</th></tr></thead>
+            <tbody>
+            @forelse ($lowStockProducts as $product)
+                <tr>
+                    <td>{{ $product->sku }}</td>
+                    <td>{{ $product->name }}</td>
+                    <td class="danger">{{ $product->stock }} {{ $product->unit }}</td>
+                    <td>{{ $product->minimum_stock }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="4" class="muted">Semua stok aman.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+    </section>
 @endsection

@@ -54,6 +54,14 @@ class DashboardController extends Controller
         $recentNotifications = Cache::remember('dashboard:recentNotifications', 30, fn () => NotificationMessage::latest()->limit(5)->get()
         );
 
+        // Stok menipis: query live (murah, terindex) agar selalu akurat;
+        // staff hanya melihat produk yang pernah ia mutasi.
+        $lowStockProducts = Product::whereColumn('stock', '<=', 'minimum_stock')
+            ->when(! $isAdmin, fn ($q) => $q->whereIn('id', InventoryMovement::where('created_by', auth()->id())->select('product_id')))
+            ->orderBy('stock')
+            ->limit(8)
+            ->get(['id', 'sku', 'name', 'stock', 'minimum_stock', 'unit']);
+
         return view('dashboard', [
             'productCount' => $stats['productCount'],
             'totalStock' => $stats['totalStock'],
@@ -61,6 +69,7 @@ class DashboardController extends Controller
             'pendingReports' => $stats['pendingReports'],
             'recentMovements' => $recentMovements,
             'recentNotifications' => $recentNotifications,
+            'lowStockProducts' => $lowStockProducts,
             'isAdminView' => $isAdmin,
         ]);
     }

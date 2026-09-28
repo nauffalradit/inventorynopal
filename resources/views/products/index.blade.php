@@ -9,6 +9,29 @@
     </div>
 
     <section class="card" style="margin-bottom:14px">
+        <h2>Cari & Saring Barang</h2>
+        <form method="get" action="{{ route('products.index') }}">
+            <div class="form-grid">
+                <label>Pencarian (SKU / Nama)
+                    <input name="search" value="{{ $search ?? '' }}" placeholder="cth: NOPAL atau TST-001">
+                </label>
+                <label>Kategori
+                    <select name="category">
+                        <option value="">Semua kategori</option>
+                        @foreach (($categories ?? []) as $cat)
+                            <option value="{{ $cat }}" @selected(($category ?? '') === $cat)>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                </label>
+            </div>
+            <div class="actions">
+                <button class="btn primary" type="submit">Terapkan</button>
+                <a class="btn" href="{{ route('products.index') }}">Atur ulang</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card" style="margin-bottom:14px">
         <h2>Mutasi Stok</h2>
         <form method="post" action="{{ route('movements.store') }}">
             @csrf

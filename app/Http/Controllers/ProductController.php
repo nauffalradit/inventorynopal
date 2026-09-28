@@ -14,12 +14,30 @@ class ProductController extends Controller
 {
     public function index(): View
     {
-        // Keep All: paginate cache 30s per page untuk percepat pindah page & refresh
+        $filters = request()->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'category' => ['nullable', 'string', 'max:120'],
+        ]);
+        $search = trim((string) ($filters['search'] ?? ''));
+        $category = trim((string) ($filters['category'] ?? ''));
         $page = (int) request()->input('page', 1);
-        $products = Cache::remember("products:index:page:$page", 30, fn () => Product::latest()->paginate(15)
-        );
 
-        return view('products.index', compact('products'));
+        // Kombinasi filter tak terbatas → query terfilter jalan live (sku unik + index),
+        // listing polos tetap cache 30s seperti sebelumnya.
+        if ($search === '' && $category === '') {
+            $products = Cache::remember("products:index:page:$page", 30, fn () => Product::latest()->paginate(15));
+        } else {
+            $products = Product::query()
+                ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w->where('sku', 'like', "%$search%")->orWhere('name', 'like', "%$search%")))
+                ->when($category !== '', fn ($q) => $q->where('category', $category))
+                ->latest()
+                ->paginate(15)
+                ->withQueryString();
+        }
+
+        $categories = Cache::remember('products:categories', 60, fn () => Product::whereNotNull('category')->distinct()->orderBy('category')->pluck('category'));
+
+        return view('products.index', compact('products', 'categories', 'search', 'category'));
     }
 
     public function create(): View
