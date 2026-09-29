@@ -29,6 +29,16 @@ class ReportController extends Controller
             'status' => 'pending',
         ]);
 
+        // Sinkron dulu agar deterministik (demo stabil tanpa worker);
+        // kalau gagal, jatuh kembali ke antrean agar tidak ada permintaan hilang.
+        try {
+            GenerateInventoryReport::dispatchSync($report);
+
+            return to_route('reports.index')->with('status', 'Laporan selesai dibuat. Klik untuk membuka PDF.');
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         GenerateInventoryReport::dispatch($report)->onQueue('reports');
         DashboardController::flushDashboard();
         for ($i = 1; $i <= 20; $i++) {
