@@ -111,4 +111,35 @@ class ProductImageTest extends TestCase
         Storage::disk('public')->assertMissing($product->image_path);
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }
+
+    public function test_layout_has_double_submit_guard(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('data-double-submit-guard', false);
+    }
+
+    public function test_index_shows_large_clickable_thumbnail(): void
+    {
+        $admin = $this->admin();
+        Product::create($this->productData(['sku' => 'IMG-BIG', 'image_path' => 'products/foto.png']));
+
+        $this->actingAs($admin)->get(route('products.index'))
+            ->assertOk()
+            ->assertSee('products/foto.png', false)
+            ->assertSee('width:72px', false)
+            ->assertSee('target="_blank"', false);
+    }
+
+    public function test_dashboard_restock_lists_product_photo(): void
+    {
+        $admin = $this->admin();
+        Product::create($this->productData(['sku' => 'IMG-DASH', 'stock' => 1, 'minimum_stock' => 5, 'image_path' => 'products/dash.png']));
+
+        $this->actingAs($admin)->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('products/dash.png', false);
+    }
 }

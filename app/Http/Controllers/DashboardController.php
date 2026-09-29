@@ -60,7 +60,7 @@ class DashboardController extends Controller
             ->when(! $isAdmin, fn ($q) => $q->whereIn('id', InventoryMovement::where('created_by', auth()->id())->select('product_id')))
             ->orderBy('stock')
             ->limit(8)
-            ->get(['id', 'sku', 'name', 'stock', 'minimum_stock', 'unit']);
+            ->get(['id', 'sku', 'name', 'stock', 'minimum_stock', 'unit', 'image_path']);
 
         return view('dashboard', [
             'productCount' => $stats['productCount'],

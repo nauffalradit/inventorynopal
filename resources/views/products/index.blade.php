@@ -72,7 +72,9 @@
             <tr>
                 <td>
                     @if($product->image_path)
-                        <img src="{{ asset('storage/'.$product->image_path) }}" alt="Foto {{ $product->name }}" style="width:48px;height:48px;object-fit:cover;border-radius:8px">
+                        <a href="{{ asset('storage/'.$product->image_path) }}" target="_blank" rel="noopener" title="Buka ukuran penuh">
+                            <img src="{{ asset('storage/'.$product->image_path) }}" alt="Foto {{ $product->name }}" style="width:72px;height:72px;object-fit:cover;border-radius:8px">
+                        </a>
                     @else
                         <span class="muted">—</span>
                     @endif

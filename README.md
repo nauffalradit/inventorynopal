@@ -5,7 +5,7 @@ Aplikasi inventory berbasis Laravel 12, PostgreSQL Neon (online), Docker Compose
 ## Service
 
 - `pencatatan`: aplikasi web untuk pencatatan barang dan mutasi stok (`http://localhost:8000`).
-- `worker`: single worker untuk queue `reports,notifications,default` (menggantikan `cetak-laporan` + `notif-komunikasi` yang kini `profiles: ["legacy"]`).
+- `worker`: opsional, khusus antrean `notifications` (laporan PDF diproses sinkron + fallback antrean, jadi worker tidak wajib). Alternatif ringan di PaaS: cron `--stop-when-empty` menempel di service web.
 - `postgres`: Postgres 16 lokal — **hanya alternatif test case** via `--profile local-db`, tidak jalan default.
 
 ## Menjalankan — Default Neon (Online, Tanpa Lokal)
@@ -42,7 +42,7 @@ docker compose --profile local-db up --build
 > Kredensial asli hanya di `.env` (gitignored) / env vars platform — JANGAN di `.env.example`.
 
 1. Push repo ke GitHub (pastikan `git status` bersih dari secret — cek `git log -S "DB_PASSWORD" --oneline`).
-2. Buat service di Railway/Render/Fly dari repo ini (1 service cukup; worker bisa jadi service ke-2 dengan command `php artisan queue:work --queue=reports,notifications,default`).
+2. Buat 1 service web dari repo ini. Antrean notifikasi diproses lewat cron 5-menit (`php artisan queue:work --queue=reports,notifications,default --stop-when-empty --sleep=2 --tries=3`) menempel di service web — tanpa service worker ke-2 (laporan PDF sudah sinkron, deterministik tanpa worker).
 3. Set env vars staging (copy dari `.env.example`, isi nilai asli):
    - `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://<domain-staging>`
    - `DB_URL` (Neon, sama seperti lokal), `CACHE_STORE=file`, `SESSION_DRIVER=file`, `QUEUE_CONNECTION=database`

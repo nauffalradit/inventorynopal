@@ -145,5 +145,30 @@
   window.addEventListener('popstate', () => location.reload());
 })();
 </script>
+<script data-double-submit-guard>
+/* Anti dobel-klik: kunci tombol submit form POST sekali tekan (submit event
+   baru jalan setelah confirm() OK, jadi dialog hapus tetap bekerja). */
+(() => {
+  const lock = (form) => {
+    const btns = form.querySelectorAll('button[type="submit"]');
+    if ([...btns].every((b) => b.disabled)) return; // sudah terkunci
+    btns.forEach((b) => {
+      b.disabled = true;
+      if (!b.dataset.label) b.dataset.label = b.textContent.trim();
+      b.textContent = 'Memproses…';
+    });
+  };
+  document.addEventListener('submit', (e) => {
+    if (e.target.tagName === 'FORM' && (e.target.method || 'get').toLowerCase() !== 'get') lock(e.target);
+  });
+  // tombol back browser bisa mengembalikan state disabled — buka kuncinya
+  window.addEventListener('pageshow', () => {
+    document.querySelectorAll('button[type="submit"][disabled]').forEach((b) => {
+      b.disabled = false;
+      if (b.dataset.label) b.textContent = b.dataset.label;
+    });
+  });
+})();
+</script>
 </body>
 </html>
