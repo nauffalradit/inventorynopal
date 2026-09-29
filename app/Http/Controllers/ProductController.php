@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -88,6 +89,9 @@ class ProductController extends Controller
     public function destroy(Product $product): RedirectResponse
     {
         Gate::authorize('admin');
+        // Riwayat order dilindungi FK restrictOnDelete — tolak halus, bukan 500.
+        $orderCount = DB::table('order_items')->where('product_id', $product->id)->count();
+        abort_if($orderCount > 0, 422, "Barang tidak dapat dihapus karena sudah tercatat di $orderCount order. Biarkan sebagai arsip riwayat.");
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);
         }

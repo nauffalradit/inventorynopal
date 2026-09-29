@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -115,6 +116,47 @@ class RbacTest extends TestCase
             ->assertForbidden();
 
         $this->assertDatabaseHas('products', ['id' => $product->id]);
+    }
+
+    // 5b. Admin ditolak halus (422, bukan 500) saat barang sudah ada di order
+    public function test_admin_cannot_delete_product_in_orders(): void
+    {
+        $admin = $this->admin();
+        $product = Product::create($this->productData(['sku' => 'DEL-ORD']));
+        $order = Order::create([
+            'user_id' => $admin->id,
+            'number' => 'ORD-DEL-001',
+            'customer_name' => 'Pelanggan Hapus',
+            'customer_email' => 'hapus@nopal.local',
+            'total_amount' => 10000,
+        ]);
+        $order->items()->create([
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'quantity' => 1,
+            'unit_price' => 10000,
+            'subtotal' => 10000,
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('products.destroy', $product))
+            ->assertStatus(422);
+
+        $this->assertDatabaseHas('products', ['id' => $product->id]);
+        $this->assertDatabaseHas('order_items', ['product_id' => $product->id]);
+    }
+
+    // 5c. Admin tetap bisa hapus barang yang belum masuk order mana pun
+    public function test_admin_can_delete_clean_product(): void
+    {
+        $admin = $this->admin();
+        $product = Product::create($this->productData(['sku' => 'DEL-BERSIH']));
+
+        $this->actingAs($admin)
+            ->delete(route('products.destroy', $product))
+            ->assertRedirect(route('products.index'));
+
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }
 
     // 6. Duplicate SKU harus ditolak
