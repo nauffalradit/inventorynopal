@@ -43,6 +43,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
         Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
+        Route::delete('reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
         Route::post('notifications', [NotificationController::class, 'store'])->name('notifications.store');
 
         Route::get('admin/users', [UserController::class, 'index'])->name('admin.users.index');

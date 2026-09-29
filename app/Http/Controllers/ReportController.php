@@ -59,4 +59,20 @@ class ReportController extends Controller
             'Content-Disposition' => 'inline; filename="inventory-report-'.$report->id.'.pdf"',
         ]);
     }
+
+    public function destroy(Report $report): RedirectResponse
+    {
+        Gate::authorize('admin');
+        if ($report->file_path) {
+            Storage::delete($report->file_path);
+        }
+        $report->delete();
+
+        DashboardController::flushDashboard();
+        for ($i = 1; $i <= 20; $i++) {
+            Cache::forget("reports:index:page:$i");
+        }
+
+        return to_route('reports.index')->with('status', 'Laporan dihapus.');
+    }
 }

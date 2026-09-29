@@ -24,7 +24,14 @@
                     @if ($report->status === 'completed')
                         <a class="btn" href="{{ route('reports.show', $report) }}">Buka PDF</a>
                     @else
-                        <span class="muted">Menunggu worker</span>
+                        <span class="muted">Menunggu diproses</span>
+                    @endif
+                    @if(auth()->user()?->isAdmin())
+                    <form class="inline" method="post" action="{{ route('reports.destroy', $report) }}" onsubmit="return confirm('Hapus laporan ini? File PDF-nya ikut terhapus.')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn" type="submit">Hapus</button>
+                    </form>
                     @endif
                 </td>
             </tr>
