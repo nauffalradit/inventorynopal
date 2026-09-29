@@ -89,9 +89,11 @@ class ProductController extends Controller
     public function destroy(Product $product): RedirectResponse
     {
         Gate::authorize('admin');
-        // Riwayat order dilindungi FK restrictOnDelete — tolak halus, bukan 500.
+        // Riwayat order dilindungi FK restrictOnDelete — kembali dengan pesan, bukan halaman error.
         $orderCount = DB::table('order_items')->where('product_id', $product->id)->count();
-        abort_if($orderCount > 0, 422, "Barang tidak dapat dihapus karena sudah tercatat di $orderCount order. Biarkan sebagai arsip riwayat.");
+        if ($orderCount > 0) {
+            return back()->with('error', "Barang tidak dapat dihapus karena sudah tercatat di $orderCount order. Biarkan sebagai arsip riwayat.");
+        }
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);
         }

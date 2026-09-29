@@ -118,7 +118,7 @@ class RbacTest extends TestCase
         $this->assertDatabaseHas('products', ['id' => $product->id]);
     }
 
-    // 5b. Admin ditolak halus (422, bukan 500) saat barang sudah ada di order
+    // 5b. Admin dikembalikan dengan pesan (bukan 500) saat barang sudah ada di order
     public function test_admin_cannot_delete_product_in_orders(): void
     {
         $admin = $this->admin();
@@ -140,7 +140,8 @@ class RbacTest extends TestCase
 
         $this->actingAs($admin)
             ->delete(route('products.destroy', $product))
-            ->assertStatus(422);
+            ->assertRedirect()
+            ->assertSessionHas('error');
 
         $this->assertDatabaseHas('products', ['id' => $product->id]);
         $this->assertDatabaseHas('order_items', ['product_id' => $product->id]);
