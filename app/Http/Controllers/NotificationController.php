@@ -24,6 +24,11 @@ class NotificationController extends Controller
         return view('notifications.index', compact('notifications', 'users', 'sender'));
     }
 
+    public function show(NotificationMessage $notification): View
+    {
+        return view('notifications.show', compact('notification'));
+    }
+
     public function store(Request $request): RedirectResponse
     {
         Gate::authorize('admin');

@@ -33,6 +33,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/{report}', [ReportController::class, 'show'])->name('reports.show');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
 
     // ADMIN only: kelola barang, laporan, notifikasi, user
     Route::middleware('admin')->group(function (): void {

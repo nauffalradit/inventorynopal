@@ -85,7 +85,7 @@
             <tr>
                 <td><x-badge>{{ $notification->channel }}</x-badge></td>
                 <td>{{ $notification->recipient }}</td>
-                <td>{{ $notification->subject }}</td>
+                <td><a class="btn" href="{{ route('notifications.show', $notification) }}">{{ $notification->subject }}</a></td>
                 <td>{{ $notification->status }}</td>
                 <td class="when muted">{{ $notification->sent_at?->format('d M Y H:i') ?: $notification->created_at->format('d M Y H:i') }}</td>
             </tr>

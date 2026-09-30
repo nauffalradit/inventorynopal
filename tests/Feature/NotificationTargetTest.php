@@ -96,4 +96,38 @@ class NotificationTargetTest extends TestCase
             ->assertSee('recipients-box', false)
             ->assertSee('name="scope"', false);
     }
+
+    public function test_admin_and_staff_can_view_notification_detail(): void
+    {
+        $admin = $this->user('admin');
+        $staff = $this->user();
+        $notification = NotificationMessage::create([
+            'channel' => 'internal',
+            'recipient' => $staff->email,
+            'subject' => 'Stok opname',
+            'message' => 'Isi lengkap pengumuman opname akhir pekan.',
+            'status' => 'sent',
+        ]);
+
+        foreach ([$admin, $staff] as $user) {
+            $this->actingAs($user)->get(route('notifications.show', $notification))
+                ->assertOk()
+                ->assertSee('Stok opname')
+                ->assertSee('Isi lengkap pengumuman opname akhir pekan.');
+        }
+    }
+
+    public function test_guest_cannot_view_notification_detail(): void
+    {
+        $notification = NotificationMessage::create([
+            'channel' => 'internal',
+            'recipient' => 'x@nopal.local',
+            'subject' => 'Rahasia',
+            'message' => 'Jangan intip.',
+            'status' => 'sent',
+        ]);
+
+        $this->get(route('notifications.show', $notification))->assertRedirect(route('login'));
+        $this->get(route('notifications.show', 999999))->assertRedirect(route('login'));
+    }
 }
