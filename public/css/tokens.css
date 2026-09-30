@@ -1,0 +1,51 @@
+/* Design tokens — Nopal A1 Inventory (kontrak U1, lihat AGENTS.md).
+ * Prinsip: tokenize TANPA redesign. Nilai = yang dipakai saat ini,
+ * kecuali yang disetujui digeser (a/b). Adopsi per halaman di Fase U3. */
+:root {
+    /* Warna dasar (dipertahankan persis dari layout lama) */
+    --surface: #fff;
+    --canvas: #f7f8fc;
+    --ink: #19233d;
+    --muted: #7c879d;
+    --line: #e8ebf2;
+    --line-strong: #dfe4ed;
+    --accent: #5b5ce2;
+    --accent-soft: #eeefff;
+    --danger: #d6485d;
+    --success: #1a9b73;
+    --navy: #17213a;
+    --navy-2: #222e4b;
+
+    /* Warna semantik pendamping (baru, untuk U2/U3 — belum dipakai layout lama) */
+    --success-bg: #ecfdf6;
+    --success-border: #a9e6cc;
+    --success-text: #137354;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+    --danger-text: #991b1b;
+
+    /* Type scale (7 anak tangga; penyeragaman 1px berlaku saat adopsi U3) */
+    --text-xs: 11px;
+    --text-sm: 12px;
+    --text-base: 13px;
+    --text-md: 14px;
+    --text-lg: 16px;   /* dari 15px */
+    --text-xl: 18px;   /* dari 17px */
+    --text-2xl: 24px;  /* dari 23/24px */
+    --text-3xl: 28px;  /* dari 27/29px */
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --section-gap: 14px; /* pola konsisten antar seksi, dipertahankan */
+
+    /* Radius (9px → 8px saat adopsi) */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    --radius-xl: 14px;
+    --radius-pill: 999px;
+}

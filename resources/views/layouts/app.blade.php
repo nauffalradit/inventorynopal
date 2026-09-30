@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }} · Inventory</title>
+    <link rel="stylesheet" href="{{ asset('css/tokens.css') }}">
     <link rel="prefetch" href="{{ route('dashboard') }}">
     <link rel="prefetch" href="{{ route('products.index') }}">
     <style>
-        :root { --navy:#17213a; --navy-2:#222e4b; --accent:#5b5ce2; --accent-soft:#eeefff; --ink:#19233d; --muted:#7c879d; --line:#e8ebf2; --surface:#fff; --canvas:#f7f8fc; --danger:#d6485d; --success:#1a9b73; }
         * { box-sizing:border-box; }
         body { margin:0; min-width:320px; font:14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color:var(--ink); background:var(--canvas); }
         .app-shell { min-height:100vh; display:flex; }
