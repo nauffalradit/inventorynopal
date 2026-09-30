@@ -18,21 +18,18 @@
         .notif-table th, .notif-table td { padding:16px 14px; }
         .notif-table .when { white-space:nowrap; font-size:12px; }
     </style>
-    <section class="card notif-form" style="margin-bottom:14px">
-        <h2>Kirim Notifikasi</h2>
+    <x-card title="Kirim Notifikasi" class="notif-form">
         <p class="muted sender-line">Dari: <strong>{{ $sender }}</strong> (pengirim sistem, tidak dapat diubah).</p>
         <form method="post" action="{{ route('notifications.store') }}">
             @csrf
             <div class="form-grid">
-                <label>Channel
+                <x-field label="Channel" name="channel" hint="Label jalur arsip — pengiriman tercatat di log.">
                     <select name="channel" required>
                         <option value="internal">Internal</option>
                         <option value="email">Email</option>
                         <option value="whatsapp">WhatsApp</option>
                     </select>
-                    <span class="field-note muted">Label jalur arsip — pengiriman tercatat di log.</span>
-                    @error('channel') <span class="error">{{ $message }}</span> @enderror
-                </label>
+                </x-field>
                 <div>
                     <span class="muted" style="font-size:12px;font-weight:650">Cakupan penerima</span>
                     <div class="notif-pills" role="radiogroup" aria-label="Cakupan penerima">
@@ -56,17 +53,15 @@
                     @error('recipients.*') <span class="error">{{ $message }}</span> @enderror
                 </label>
             </div>
-            <label style="margin-top:14px">Subjek
+            <x-field label="Subjek" name="subject" style="margin-top:14px;display:grid">
                 <input name="subject" value="{{ old('subject') }}" required>
-                @error('subject') <span class="error">{{ $message }}</span> @enderror
-            </label>
-            <label style="margin-top:14px">Pesan
+            </x-field>
+            <x-field label="Pesan" name="message" style="margin-top:14px;display:grid">
                 <textarea name="message" required>{{ old('message') }}</textarea>
-                @error('message') <span class="error">{{ $message }}</span> @enderror
-            </label>
-            <div class="actions"><button class="btn primary" type="submit">Kirim</button></div>
+            </x-field>
+            <div class="actions"><x-btn variant="primary" type="submit">Kirim</x-btn></div>
         </form>
-    </section>
+    </x-card>
     <script>
     /* Tampilkan kotak penerima hanya untuk cakupan "Akun tertentu". */
     (() => {
@@ -85,21 +80,18 @@
     </script>
     @endif
 
-    <table class="notif-table">
-        <thead><tr><th>Channel</th><th>Penerima</th><th>Subjek</th><th>Status</th><th>Waktu</th></tr></thead>
-        <tbody>
+    <x-table class="notif-table" :headers="['Channel', 'Penerima', 'Subjek', 'Status', 'Waktu']">
         @forelse ($notifications as $notification)
             <tr>
-                <td><span class="badge">{{ $notification->channel }}</span></td>
+                <td><x-badge>{{ $notification->channel }}</x-badge></td>
                 <td>{{ $notification->recipient }}</td>
                 <td>{{ $notification->subject }}</td>
                 <td>{{ $notification->status }}</td>
                 <td class="when muted">{{ $notification->sent_at?->format('d M Y H:i') ?: $notification->created_at->format('d M Y H:i') }}</td>
             </tr>
         @empty
-            <tr><td colspan="5" class="muted">Belum ada notifikasi.</td></tr>
+            <x-empty-state :colspan="5" message="Belum ada notifikasi." />
         @endforelse
-        </tbody>
-    </table>
+    </x-table>
     <div style="margin-top:14px">{{ $notifications->links() }}</div>
 @endsection
