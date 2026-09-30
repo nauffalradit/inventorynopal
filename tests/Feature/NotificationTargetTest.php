@@ -84,4 +84,16 @@ class NotificationTargetTest extends TestCase
 
         $this->assertEquals(0, NotificationMessage::count());
     }
+
+    public function test_form_uses_scope_pills_and_conditional_recipients_box(): void
+    {
+        $admin = $this->user('admin');
+        $this->user();
+
+        $this->actingAs($admin)->get(route('notifications.index'))
+            ->assertOk()
+            ->assertSee('notif-pills', false)
+            ->assertSee('recipients-box', false)
+            ->assertSee('name="scope"', false);
+    }
 }
