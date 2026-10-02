@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\NotificationController;
 use App\Models\NotificationMessage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -129,5 +130,89 @@ class NotificationTargetTest extends TestCase
 
         $this->get(route('notifications.show', $notification))->assertRedirect(route('login'));
         $this->get(route('notifications.show', 999999))->assertRedirect(route('login'));
+    }
+
+    private function sentTo(string $email): NotificationMessage
+    {
+        return NotificationMessage::create([
+            'channel' => 'internal',
+            'recipient' => $email,
+            'subject' => 'Info',
+            'message' => 'Isi info.',
+            'status' => 'sent',
+            'sent_at' => now(),
+        ]);
+    }
+
+    public function test_owner_can_mark_own_notification_read(): void
+    {
+        $owner = $this->user();
+        $notification = $this->sentTo($owner->email);
+
+        $this->actingAs($owner)
+            ->patch(route('notifications.read', $notification))
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $this->assertNotNull($notification->fresh()->read_at);
+    }
+
+    public function test_non_owner_staff_cannot_mark_read(): void
+    {
+        $owner = $this->user();
+        $other = $this->user();
+        $notification = $this->sentTo($owner->email);
+
+        $this->actingAs($other)
+            ->patch(route('notifications.read', $notification))
+            ->assertForbidden();
+
+        $this->assertNull($notification->fresh()->read_at);
+    }
+
+    public function test_admin_can_mark_others_and_double_mark_is_idempotent(): void
+    {
+        $admin = $this->user('admin');
+        $owner = $this->user();
+        $notification = $this->sentTo($owner->email);
+
+        $this->actingAs($admin)->patch(route('notifications.read', $notification))->assertRedirect();
+        $first = $notification->fresh()->read_at;
+        $this->assertNotNull($first);
+
+        $this->actingAs($admin)->patch(route('notifications.read', $notification))->assertRedirect();
+        $this->assertEquals($first->toDateTimeString(), $notification->fresh()->read_at->toDateTimeString());
+    }
+
+    public function test_admin_can_delete_and_staff_cannot(): void
+    {
+        $admin = $this->user('admin');
+        $staff = $this->user();
+        $one = $this->sentTo($staff->email);
+        $two = $this->sentTo($staff->email);
+
+        $this->actingAs($staff)->delete(route('notifications.destroy', $one))->assertForbidden();
+        $this->assertDatabaseHas('notification_messages', ['id' => $one->id]);
+
+        $this->actingAs($admin)->delete(route('notifications.destroy', $two))
+            ->assertRedirect(route('notifications.index'));
+        $this->assertDatabaseMissing('notification_messages', ['id' => $two->id]);
+    }
+
+    public function test_bell_counts_only_my_unread_sent(): void
+    {
+        $admin = $this->user('admin');
+        $me = $this->user();
+        $this->sentTo($me->email);
+        $this->sentTo($me->email);
+        $read = $this->sentTo($me->email);
+        $read->update(['read_at' => now()]);
+        $this->sentTo($admin->email); // milik orang lain → tidak ikut
+
+        $this->assertEquals(2, NotificationController::unreadCount($me->id, $me->email));
+
+        $this->actingAs($me)->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('title="Notifikasi"', false);
     }
 }

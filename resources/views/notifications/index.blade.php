@@ -80,17 +80,34 @@
     </script>
     @endif
 
-    <x-table class="notif-table" :headers="['Channel', 'Penerima', 'Subjek', 'Status', 'Waktu']">
+    <x-table class="notif-table" :headers="['Channel', 'Penerima', 'Subjek', 'Status', 'Dibaca', 'Waktu', 'Aksi']">
         @forelse ($notifications as $notification)
             <tr>
                 <td><x-badge>{{ $notification->channel }}</x-badge></td>
                 <td>{{ $notification->recipient }}</td>
                 <td><a class="btn" href="{{ route('notifications.show', $notification) }}">{{ $notification->subject }}</a></td>
                 <td>{{ $notification->status }}</td>
+                <td>{{ $notification->read_at?->format('d M Y H:i') ?: '—' }}</td>
                 <td class="when muted">{{ $notification->sent_at?->format('d M Y H:i') ?: $notification->created_at->format('d M Y H:i') }}</td>
+                <td>
+                    @if($notification->read_at === null && (auth()->user()?->isAdmin() || $notification->recipient === auth()->user()?->email))
+                    <form class="inline" method="post" action="{{ route('notifications.read', $notification) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button class="btn" type="submit">Tandai dibaca</button>
+                    </form>
+                    @endif
+                    @if(auth()->user()?->isAdmin())
+                    <form class="inline" method="post" action="{{ route('notifications.destroy', $notification) }}" onsubmit="return confirm('Hapus notifikasi ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn" type="submit">Hapus</button>
+                    </form>
+                    @endif
+                </td>
             </tr>
         @empty
-            <x-empty-state :colspan="5" message="Belum ada notifikasi." />
+            <x-empty-state :colspan="7" message="Belum ada notifikasi." />
         @endforelse
     </x-table>
     <div style="margin-top:14px">{{ $notifications->links() }}</div>

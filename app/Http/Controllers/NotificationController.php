@@ -67,7 +67,51 @@ class NotificationController extends Controller
         for ($i = 1; $i <= 20; $i++) {
             Cache::forget("notifications:index:page:$i");
         }
+        self::flushUnread($emails);
 
         return to_route('notifications.index')->with('status', 'Notifikasi untuk '.count($emails).' penerima masuk ke antrian komunikasi.');
+    }
+
+    public function markRead(NotificationMessage $notification): RedirectResponse
+    {
+        $user = auth()->user();
+        abort_unless($user && ($user->isAdmin() || $notification->recipient === $user->email), 403);
+
+        if ($notification->read_at === null) {
+            $notification->update(['read_at' => now()]);
+            self::flushUnread([$notification->recipient]);
+            for ($i = 1; $i <= 20; $i++) {
+                Cache::forget("notifications:index:page:$i");
+            }
+        }
+
+        return back()->with('status', 'Notifikasi ditandai dibaca.');
+    }
+
+    public function destroy(NotificationMessage $notification): RedirectResponse
+    {
+        Gate::authorize('admin');
+        $notification->delete();
+
+        self::flushUnread([$notification->recipient]);
+        for ($i = 1; $i <= 20; $i++) {
+            Cache::forget("notifications:index:page:$i");
+        }
+
+        return to_route('notifications.index')->with('status', 'Notifikasi dihapus.');
+    }
+
+    public static function unreadCount(int $userId, string $email): int
+    {
+        return (int) Cache::remember("notifications:unread:$userId", 60, fn () => NotificationMessage::query()
+            ->where('recipient', $email)->where('status', 'sent')->whereNull('read_at')->count());
+    }
+
+    private static function flushUnread(array $emails): void
+    {
+        $ids = User::query()->whereIn('email', $emails)->pluck('id');
+        foreach ($ids as $id) {
+            Cache::forget("notifications:unread:$id");
+        }
     }
 }

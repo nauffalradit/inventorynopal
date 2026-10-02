@@ -34,6 +34,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('reports/{report}', [ReportController::class, 'show'])->name('reports.show');
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
+    Route::patch('notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
 
     // ADMIN only: kelola barang, laporan, notifikasi, user
     Route::middleware('admin')->group(function (): void {
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::post('reports', [ReportController::class, 'store'])->name('reports.store');
         Route::delete('reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
         Route::post('notifications', [NotificationController::class, 'store'])->name('notifications.store');
+        Route::delete('notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 
         Route::get('admin/users', [UserController::class, 'index'])->name('admin.users.index');
         Route::patch('admin/users/{user}/role', [UserController::class, 'updateRole'])->name('admin.users.role');

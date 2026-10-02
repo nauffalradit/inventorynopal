@@ -84,7 +84,7 @@
         </div>
     </aside>
     <div class="main-area">
-        <header class="topbar"><div class="crumb">Inventory / <strong>{{ request()->routeIs('dashboard') ? 'Dashboard' : 'Workspace' }}</strong></div><div class="topbar-right"><span class="date">{{ now()->translatedFormat('l, d F Y') }}</span><span class="bell"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span></div></header>
+        <header class="topbar"><div class="crumb">Inventory / <strong>{{ request()->routeIs('dashboard') ? 'Dashboard' : 'Workspace' }}</strong></div><div class="topbar-right"><span class="date">{{ now()->translatedFormat('l, d F Y') }}</span><a class="bell" href="{{ route('notifications.index') }}" title="Notifikasi" style="position:relative;text-decoration:none"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>@if(($unreadNotifications ?? 0) > 0)<span class="badge" style="position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px">{{ $unreadNotifications > 99 ? '99+' : $unreadNotifications }}</span>@endif</a></div></header>
         <main>
             @if (session('status'))<div class="status">{{ session('status') }}</div>@endif
             @if (session('error'))<div class="status" style="background:#fef2f2;border-color:#fecaca;color:#991b1b">{{ session('error') }}</div>@endif
