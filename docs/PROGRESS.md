@@ -12,7 +12,7 @@
 ## Kurikulum UI modern (disepakati 29–30 Sep)
 
 - U1 tokens ✅ (30 Sep): `public/css/tokens.css` + kontrak di AGENTS.md + `DesignTokensTest`. Prinsip: nama=makna, tokenize tanpa redesign. Keputusan: type 7 tangga (geser 1px diterima), radius 9→8, file terpisah. Koreksi: `--muted` tetap `#7c879d`.
-- U2 komponen ✅ SEBAGIAN (30 Sep): `x-card/x-btn/x-badge/x-field/x-table/x-empty-state` + pilot halaman notifikasi. Pelajaran: `@error($var)` dinamis rapuh di komponen → pakai `$errors->has/first` eksplisit. Sisa U2: migrasi 11 halaman lain (lain waktu).
+- U2 komponen ✅ SEBAGIAN (30 Sep–2 Okt): `x-card/x-btn/x-badge/x-field/x-table/x-empty-state` + pilot halaman notifikasi (tabel 7 kolom: Channel/Penerima/Subjek/Status/Dibaca/Waktu/Aksi + `notifications/show`). Pelajaran: `@error($var)` dinamis rapuh di komponen → pakai `$errors->has/first` eksplisit. Sisa U2: migrasi 11 halaman lain (dashboard, products/*, orders/*, reports/index, admin/users/index, auth/login — lain waktu).
 - U3 migrasi halaman: dashboard → produk → order → laporan → **notifikasi (termasuk `<x-check-list>` penerima — KONTRAK TERTUNDA, jangan bangun standalone)** → admin/auth.
 - U4 review & docs.
 
@@ -40,11 +40,11 @@
 9. Dobel-klik tombol submit = job ganda → guard global di layout (`data-double-submit-guard`).
 10. Secret `bb25c3f:.env.example` bocor → password Neon SUDAH dirotasi (dead). Jangan taruh secret di `.env.example` lagi.
 
-## Status terakhir (30 Sep 2026, tutup sesi)
+## Status terakhir (3 Okt 2026, sinkron pasca-4-commit)
 
-- `origin/main` = bfc5fc8 (U1+poles). Tree: komponen U2 + pilot notifikasi BELUM commit.
-- Test 32/32 (131 assertions), pint passed. Staging: smoke hijau + video demo 2:55.
-- Antre: commit U2+notif → Redeploy → smoke → (opsional) hapus 3 report `failed` via UI → U2 lanjutan / sesi (b) debug mandiri.
+- HEAD = `d151aa2` (tree bersih): `070095a` U2 + `f82afc6` PROGRESS + `0e67ddb` detail notifikasi (admin+staff bisa baca isi) + `d151aa2` tandai-dibaca (owner/admin, idempotent) + bel unread + hapus admin-only.
+- Test 39/39 (158 assertions), pint passed (verifikasi 3 Okt, isolasi sqlite — dulu 32/32 pada 30 Sep, +7 dari fitur detail/read/delete/bell). Staging: smoke hijau + video demo 2:55 (30 Sep, sebelum 4 commit ini — smoke ulang antre).
+- Antre: smoke staging pasca-U2 (pilot 7-kolom + show + dibaca/hapus) → U2 lanjutan (11 halaman) / U3 `<x-check-list>` (kontrak tertunda) / sesi (b) debug mandiri.
 
 ## Sesi (b): debug mandiri (jadwal tiap 2 minggu)
 
