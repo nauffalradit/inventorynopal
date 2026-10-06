@@ -13,7 +13,7 @@
 
 - U1 tokens ✅ (30 Sep): `public/css/tokens.css` + kontrak di AGENTS.md + `DesignTokensTest`. Prinsip: nama=makna, tokenize tanpa redesign. Keputusan: type 7 tangga (geser 1px diterima), radius 9→8, file terpisah. Koreksi: `--muted` tetap `#7c879d`.
 - U2 komponen ✅ (3 Okt): `x-card/x-btn/x-badge/x-field/x-table/x-empty-state` + migrasi 12 halaman (dashboard, products/*+_form, orders/*, reports/index, admin/users/index, notifications/index+show). Pelajaran: `@error($var)` dinamis rapuh di komponen → pakai `$errors->has/first` eksplisit; tabel detail key-value (notif show) tetap raw table; `auth/login` (standalone, palet teal sendiri) + `reports/pdf` (dompdf) SENGAJA tidak disentuh.
-- U3 migrasi halaman: dashboard → produk → order → laporan → **notifikasi (termasuk `<x-check-list>` penerima — KONTRAK TERTUNDA, jangan bangun standalone)** → admin/auth.
+- U3 NOTIFIKASI (batch B, 6 Okt, BELUM commit): `x-check-list` reusable (checkbox kartu + avatar inisial + search + Pilih-semua + scroll 200px) + panel Pratinjau live + char-count + Kirim disabled (progressive enhancement; validasi tetap server). Sisa U3: layout tokenize → admin + notif-show → thumbnail unifikasi → pagination/sisa → login DITUNDA (standalone).
 - U4 review & docs.
 
 ## Keputusan tercatat (jangan dibuka ulang tanpa alasan baru)
@@ -40,11 +40,12 @@
 9. Dobel-klik tombol submit = job ganda → guard global di layout (`data-double-submit-guard`).
 10. Secret `bb25c3f:.env.example` bocor → password Neon SUDAH dirotasi (dead). Jangan taruh secret di `.env.example` lagi.
 
-## Status terakhir (3 Okt 2026, sinkron pasca-4-commit)
+## Status terakhir (6 Okt 2026, batch B notifikasi)
 
-- HEAD = `d151aa2` (tree bersih): `070095a` U2 + `f82afc6` PROGRESS + `0e67ddb` detail notifikasi (admin+staff bisa baca isi) + `d151aa2` tandai-dibaca (owner/admin, idempotent) + bel unread + hapus admin-only.
-- Test 39/39 (158 assertions), pint passed (verifikasi 3 Okt, isolasi sqlite — dulu 32/32 pada 30 Sep, +7 dari fitur detail/read/delete/bell). Staging: smoke hijau + video demo 2:55 (30 Sep, sebelum 4 commit ini — smoke ulang antre).
-- Antre: preview lokal (gating: visual identik) → commit U2 → push → Redeploy → smoke staging → U3 migrasi halaman + `<x-check-list>` (kontrak tertunda) / sesi (b) debug mandiri.
+- HEAD = `053bb0d` (U2 commit, tree bersih sebelum batch ini). Batch B BELUM commit: `x-check-list` + recipients search + pratinjau + sisa `x-btn` notifikasi + `NotificationCheckListTest`.
+- Test 42/42 (174 assertions), pint passed (verifikasi 6 Okt, isolasi sqlite — +3 dari test render checklist/pratinjau).
+- Referensi mock `Notif & Komunikasi – Konsep Ulang.html`: pola diadopsi (search, kartu checkbox avatar, pratinjau live, char-count, Kirim disabled); palet/font mock DITOLAK (kontrak U1), channel tetap 3, riwayat tetap 7 kolom + Aksi.
+- Antre: preview lokal batch B (Anda) → commit → smoke staging → layout tokenize → admin + notif-show → thumbnail → pagination/sisa → login ditunda.
 
 ## Sesi (b): debug mandiri (jadwal tiap 2 minggu)
 
