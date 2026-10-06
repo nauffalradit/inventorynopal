@@ -2,9 +2,9 @@
 
 @section('content')
     <h1>Tambah Barang</h1>
-    <div class="card">
+    <x-card>
         <form method="post" action="{{ route('products.store') }}" enctype="multipart/form-data">
             @include('products._form')
         </form>
-    </div>
+    </x-card>
 @endsection

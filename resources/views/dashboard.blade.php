@@ -13,48 +13,37 @@
     </section>
 
     <section class="grid two" style="margin-top:14px">
-        <div class="card">
-            <h2>Mutasi Terakhir</h2>
-            <table>
-                <thead><tr><th>Barang</th><th>Tipe</th><th>Qty</th><th>Sisa</th><th>Oleh</th><th>Waktu</th></tr></thead>
-                <tbody>
+        <x-card title="Mutasi Terakhir">
+            <x-table :headers="['Barang', 'Tipe', 'Qty', 'Sisa', 'Oleh', 'Waktu']">
                 @forelse ($recentMovements as $movement)
                     <tr>
                         <td>{{ $movement->product?->name }}</td>
-                        <td><span class="badge">{{ $movement->type }}</span></td>
+                        <td><x-badge>{{ $movement->type }}</x-badge></td>
                         <td>{{ $movement->quantity }}</td>
                         <td>{{ $movement->balance_after }}</td>
                         <td>{{ auth()->user()?->isAdmin() ? ($movement->creator?->name ?? '—') : '—' }}</td>
                         <td>{{ $movement->created_at->format('d M Y H:i') }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="muted">Belum ada mutasi.</td></tr>
+                    <x-empty-state :colspan="6" message="Belum ada mutasi." />
                 @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="card">
-            <h2>Komunikasi Terakhir</h2>
-            <table>
-                <thead><tr><th>Tujuan</th><th>Status</th></tr></thead>
-                <tbody>
+            </x-table>
+        </x-card>
+        <x-card title="Komunikasi Terakhir">
+            <x-table :headers="['Tujuan', 'Status']">
                 @forelse ($recentNotifications as $notification)
                     <tr>
                         <td>{{ $notification->recipient }}<br><span class="muted">{{ $notification->subject }}</span></td>
-                        <td><span class="badge">{{ $notification->status }}</span></td>
+                        <td><x-badge>{{ $notification->status }}</x-badge></td>
                     </tr>
                 @empty
-                    <tr><td colspan="2" class="muted">Belum ada notifikasi.</td></tr>
+                    <x-empty-state :colspan="2" message="Belum ada notifikasi." />
                 @endforelse
-                </tbody>
-            </table>
-        </div>
+            </x-table>
+        </x-card>
     </section>
-    <section class="card" style="margin-top:14px">
-        <h2>Perlu Restock ⚠️</h2>
-        <table>
-            <thead><tr><th>Foto</th><th>SKU</th><th>Nama</th><th>Stok</th><th>Minimum</th></tr></thead>
-            <tbody>
+    <x-card title="Perlu Restock ⚠️" style="margin-top:14px">
+        <x-table :headers="['Foto', 'SKU', 'Nama', 'Stok', 'Minimum']">
             @forelse ($lowStockProducts as $product)
                 <tr>
                     <td>
@@ -70,9 +59,8 @@
                     <td>{{ $product->minimum_stock }}</td>
                 </tr>
             @empty
-                <tr><td colspan="5" class="muted">Semua stok aman.</td></tr>
+                <x-empty-state :colspan="5" message="Semua stok aman." />
             @endforelse
-            </tbody>
-        </table>
-    </section>
+        </x-table>
+    </x-card>
 @endsection

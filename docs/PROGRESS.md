@@ -12,7 +12,7 @@
 ## Kurikulum UI modern (disepakati 29–30 Sep)
 
 - U1 tokens ✅ (30 Sep): `public/css/tokens.css` + kontrak di AGENTS.md + `DesignTokensTest`. Prinsip: nama=makna, tokenize tanpa redesign. Keputusan: type 7 tangga (geser 1px diterima), radius 9→8, file terpisah. Koreksi: `--muted` tetap `#7c879d`.
-- U2 komponen ✅ SEBAGIAN (30 Sep–2 Okt): `x-card/x-btn/x-badge/x-field/x-table/x-empty-state` + pilot halaman notifikasi (tabel 7 kolom: Channel/Penerima/Subjek/Status/Dibaca/Waktu/Aksi + `notifications/show`). Pelajaran: `@error($var)` dinamis rapuh di komponen → pakai `$errors->has/first` eksplisit. Sisa U2: migrasi 11 halaman lain (dashboard, products/*, orders/*, reports/index, admin/users/index, auth/login — lain waktu).
+- U2 komponen ✅ (3 Okt): `x-card/x-btn/x-badge/x-field/x-table/x-empty-state` + migrasi 12 halaman (dashboard, products/*+_form, orders/*, reports/index, admin/users/index, notifications/index+show). Pelajaran: `@error($var)` dinamis rapuh di komponen → pakai `$errors->has/first` eksplisit; tabel detail key-value (notif show) tetap raw table; `auth/login` (standalone, palet teal sendiri) + `reports/pdf` (dompdf) SENGAJA tidak disentuh.
 - U3 migrasi halaman: dashboard → produk → order → laporan → **notifikasi (termasuk `<x-check-list>` penerima — KONTRAK TERTUNDA, jangan bangun standalone)** → admin/auth.
 - U4 review & docs.
 
@@ -44,7 +44,7 @@
 
 - HEAD = `d151aa2` (tree bersih): `070095a` U2 + `f82afc6` PROGRESS + `0e67ddb` detail notifikasi (admin+staff bisa baca isi) + `d151aa2` tandai-dibaca (owner/admin, idempotent) + bel unread + hapus admin-only.
 - Test 39/39 (158 assertions), pint passed (verifikasi 3 Okt, isolasi sqlite — dulu 32/32 pada 30 Sep, +7 dari fitur detail/read/delete/bell). Staging: smoke hijau + video demo 2:55 (30 Sep, sebelum 4 commit ini — smoke ulang antre).
-- Antre: smoke staging pasca-U2 (pilot 7-kolom + show + dibaca/hapus) → U2 lanjutan (11 halaman) / U3 `<x-check-list>` (kontrak tertunda) / sesi (b) debug mandiri.
+- Antre: preview lokal (gating: visual identik) → commit U2 → push → Redeploy → smoke staging → U3 migrasi halaman + `<x-check-list>` (kontrak tertunda) / sesi (b) debug mandiri.
 
 ## Sesi (b): debug mandiri (jadwal tiap 2 minggu)
 

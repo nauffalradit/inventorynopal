@@ -4,46 +4,44 @@
     <div class="actions" style="justify-content:space-between; margin-top:0">
         <h1 style="margin:0">Pencatatan Barang</h1>
         @if(auth()->user()?->isAdmin())
-        <a class="btn primary" href="{{ route('products.create') }}">Tambah Barang</a>
+        <x-btn variant="primary" href="{{ route('products.create') }}">Tambah Barang</x-btn>
         @endif
     </div>
 
-    <section class="card" style="margin-bottom:14px">
-        <h2>Cari & Saring Barang</h2>
+    <x-card title="Cari & Saring Barang">
         <form method="get" action="{{ route('products.index') }}">
             <div class="form-grid">
-                <label>Pencarian (SKU / Nama)
+                <x-field label="Pencarian (SKU / Nama)">
                     <input name="search" value="{{ $search ?? '' }}" placeholder="cth: NOPAL atau TST-001">
-                </label>
-                <label>Kategori
+                </x-field>
+                <x-field label="Kategori">
                     <select name="category">
                         <option value="">Semua kategori</option>
                         @foreach (($categories ?? []) as $cat)
                             <option value="{{ $cat }}" @selected(($category ?? '') === $cat)>{{ $cat }}</option>
                         @endforeach
                     </select>
-                </label>
+                </x-field>
             </div>
             <div class="actions">
-                <button class="btn primary" type="submit">Terapkan</button>
-                <a class="btn" href="{{ route('products.index') }}">Atur ulang</a>
+                <x-btn variant="primary" type="submit">Terapkan</x-btn>
+                <x-btn href="{{ route('products.index') }}">Atur ulang</x-btn>
             </div>
         </form>
-    </section>
+    </x-card>
 
-    <section class="card" style="margin-bottom:14px">
-        <h2>Mutasi Stok</h2>
+    <x-card title="Mutasi Stok">
         <form method="post" action="{{ route('movements.store') }}">
             @csrf
             <div class="form-grid">
-                <label>Barang
+                <x-field label="Barang">
                     <select name="product_id" required>
                         @foreach ($products as $product)
                             <option value="{{ $product->id }}">{{ $product->sku }} - {{ $product->name }}</option>
                         @endforeach
                     </select>
-                </label>
-                <label>Tipe
+                </x-field>
+                <x-field label="Tipe">
                     <select name="type" required>
                         <option value="in">Masuk</option>
                         <option value="out">Keluar</option>
@@ -51,23 +49,19 @@
                         <option value="adjustment">Penyesuaian</option>
                         @endif
                     </select>
-                </label>
-                <label>Jumlah
+                </x-field>
+                <x-field label="Jumlah">
                     <input type="number" name="quantity" min="1" value="1" required>
-                </label>
+                </x-field>
             </div>
-            <label style="margin-top:12px">Catatan
+            <x-field label="Catatan" style="margin-top:12px">
                 <textarea name="notes"></textarea>
-            </label>
-            <div class="actions"><button class="btn primary" type="submit">Catat Mutasi</button></div>
+            </x-field>
+            <div class="actions"><x-btn variant="primary" type="submit">Catat Mutasi</x-btn></div>
         </form>
-    </section>
+    </x-card>
 
-    <table>
-        <thead>
-            <tr><th>Foto</th><th>SKU</th><th>Nama</th><th>Kategori</th><th>Stok</th><th>Minimum</th><th>Lokasi</th><th>Aksi</th></tr>
-        </thead>
-        <tbody>
+    <x-table :headers="['Foto', 'SKU', 'Nama', 'Kategori', 'Stok', 'Minimum', 'Lokasi', 'Aksi']">
         @forelse ($products as $product)
             <tr>
                 <td>
@@ -87,11 +81,11 @@
                 <td>{{ $product->location ?: '-' }}</td>
                 <td>
                     @if(auth()->user()?->isAdmin())
-                    <a class="btn" href="{{ route('products.edit', $product) }}">Edit</a>
+                    <x-btn href="{{ route('products.edit', $product) }}">Edit</x-btn>
                     <form class="inline" method="post" action="{{ route('products.destroy', $product) }}">
                         @csrf
                         @method('DELETE')
-                        <button class="btn" type="submit">Hapus</button>
+                        <x-btn type="submit">Hapus</x-btn>
                     </form>
                     @else
                     <span class="muted">—</span>
@@ -99,10 +93,9 @@
                 </td>
             </tr>
         @empty
-            <tr><td colspan="8" class="muted">Belum ada barang.</td></tr>
+            <x-empty-state :colspan="8" message="Belum ada barang." />
         @endforelse
-        </tbody>
-    </table>
+    </x-table>
 
     <div style="margin-top:14px">{{ $products->links() }}</div>
 @endsection

@@ -2,10 +2,10 @@
 
 @section('content')
     <h1>Edit Barang</h1>
-    <div class="card">
+    <x-card>
         <form method="post" action="{{ route('products.update', $product) }}" enctype="multipart/form-data">
             @method('PUT')
             @include('products._form')
         </form>
-    </div>
+    </x-card>
 @endsection

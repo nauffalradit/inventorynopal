@@ -8,33 +8,31 @@
 
 <form method="get" action="{{ route('admin.users.index') }}" style="margin-bottom:14px">
     <div class="form-grid" style="grid-template-columns:200px 200px auto;align-items:end">
-        <label>Role
+        <x-field label="Role">
             <select name="role">
                 <option value="">Semua</option>
                 <option value="admin" @selected(($role ?? '')==='admin')>admin</option>
                 <option value="staff" @selected(($role ?? '')==='staff')>staff</option>
             </select>
-        </label>
-        <label>Status
+        </x-field>
+        <x-field label="Status">
             <select name="status">
                 <option value="">Semua</option>
                 <option value="aktif" @selected(($status ?? '')==='aktif')>aktif</option>
                 <option value="nonaktif" @selected(($status ?? '')==='nonaktif')>nonaktif</option>
             </select>
-        </label>
-        <div class="actions" style="margin-top:0"><button class="btn" type="submit">Filter</button><a class="btn" href="{{ route('admin.users.index') }}">Reset</a></div>
+        </x-field>
+        <div class="actions" style="margin-top:0"><x-btn type="submit">Filter</x-btn><x-btn href="{{ route('admin.users.index') }}">Reset</x-btn></div>
     </div>
 </form>
 
-<table>
-    <thead><tr><th>Nama</th><th>Email</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
-    <tbody>
+<x-table :headers="['Nama', 'Email', 'Role', 'Status', 'Aksi']">
     @forelse ($users as $user)
         <tr>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
-            <td><span class="badge">{{ $user->role }}{{ $user->isAdmin() && $user->role !== 'admin' ? ' (fallback admin)' : '' }}</span></td>
-            <td><span class="badge" style="{{ $user->is_active ? '' : 'background:#fef2f2;color:#991b1b' }}">{{ $user->is_active ? 'aktif' : 'nonaktif' }}</span></td>
+            <td><x-badge>{{ $user->role }}{{ $user->isAdmin() && $user->role !== 'admin' ? ' (fallback admin)' : '' }}</x-badge></td>
+            <td><x-badge style="{{ $user->is_active ? '' : 'background:#fef2f2;color:#991b1b' }}">{{ $user->is_active ? 'aktif' : 'nonaktif' }}</x-badge></td>
             <td>
                 <form class="inline" method="post" action="{{ route('admin.users.role', $user) }}">
                     @csrf @method('PATCH')
@@ -42,19 +40,18 @@
                         <option value="staff" @selected($user->role==='staff')>staff</option>
                         <option value="admin" @selected($user->role==='admin')>admin</option>
                     </select>
-                    <button class="btn" type="submit">Ubah Role</button>
+                    <x-btn type="submit">Ubah Role</x-btn>
                 </form>
                 <form class="inline" method="post" action="{{ route('admin.users.toggle', $user) }}">
                     @csrf @method('PATCH')
-                    <button class="btn" type="submit">{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</button>
+                    <x-btn type="submit">{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</x-btn>
                 </form>
             </td>
         </tr>
     @empty
-        <tr><td colspan="5" class="muted">Belum ada user.</td></tr>
+        <x-empty-state :colspan="5" message="Belum ada user." />
     @endforelse
-    </tbody>
-</table>
+</x-table>
 <div style="margin-top:14px">{{ $users->links() }}</div>
 
 <p class="muted" style="margin-top:14px">Fallback <code>ADMIN_EMAILS</code> di <code>.env</code> tetap sebagai super-admin emergency jika role DB terhapus.</p>
