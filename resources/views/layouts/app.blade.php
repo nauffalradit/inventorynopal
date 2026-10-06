@@ -48,7 +48,14 @@
         .metric:nth-child(2)::after { background:var(--metric-tint-2); }.metric:nth-child(3)::after { background:var(--metric-tint-3); }.metric:nth-child(4)::after { background:var(--metric-tint-4); }
         .actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:18px; }
         .btn { min-height:39px; display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:8px 13px; border:1px solid var(--line); border-radius:var(--radius-md); color:var(--btn-ink); background:var(--surface); cursor:pointer; text-decoration:none; font:inherit; font-size:var(--text-base); font-weight:650; transition:.18s ease; }
-        .btn:hover { border-color:var(--btn-hover-border); transform:translateY(-1px); box-shadow:0 3px 10px rgba(32,43,66,.06); }.btn.primary { border-color:var(--accent); color:var(--surface); background:var(--accent); box-shadow:0 6px 14px rgba(91,92,226,.2); }
+        .btn:hover { border-color:var(--btn-hover-border); transform:translateY(-1px); box-shadow:0 3px 10px rgba(32,43,66,.06); }        .btn.primary { border-color:var(--accent); color:var(--surface); background:var(--accent); box-shadow:0 6px 14px rgba(91,92,226,.2); }
+        .btn.ghost { background:transparent; }
+        .btn.ghost:hover { border-color:var(--accent); color:var(--accent); box-shadow:none; transform:none; }
+        .btn.ghost-danger { background:transparent; }
+        .btn.ghost-danger:hover { border-color:var(--danger); color:var(--danger); box-shadow:none; transform:none; }
+        .stats-strip { display:flex; flex-wrap:wrap; gap:var(--space-5); padding:22px 26px; border-bottom:1px solid var(--line); }
+        .stat-item small { display:block; color:var(--muted); font-size:var(--text-sm); }
+        .stat-item b { font-size:var(--text-2xl); letter-spacing:-.5px; }
         table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--surface); }
         th,td { padding:13px 14px; border-bottom:1px solid var(--table-line); text-align:left; vertical-align:middle; } th { color:var(--table-head-ink); background:var(--table-head-bg); font-size:10px; font-weight:750; letter-spacing:.08em; text-transform:uppercase; } tr:last-child td { border-bottom:0; } tbody tr:hover td { background:var(--table-hover); }
         input,select,textarea { width:100%; min-height:41px; padding:9px 11px; border:1px solid var(--line-strong); border-radius:var(--radius-md); outline:0; color:var(--ink); background:var(--surface); font:inherit; } input:focus,select:focus,textarea:focus { border-color:var(--focus-ring); box-shadow:0 0 0 3px rgba(91,92,226,.1); } textarea { min-height:96px; resize:vertical; }

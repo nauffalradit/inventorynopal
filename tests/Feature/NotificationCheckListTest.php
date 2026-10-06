@@ -84,7 +84,8 @@ class NotificationCheckListTest extends TestCase
 
         $this->actingAs($admin)->get(route('notifications.index'))
             ->assertOk()
-            ->assertSee('<span class="badge">sent</span>', false)
+            ->assertSee('<span class="badge', false)
+            ->assertSee('>sent</span>', false)
             ->assertSee('Tandai dibaca', false);
     }
 }

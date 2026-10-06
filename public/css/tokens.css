@@ -55,6 +55,10 @@
     --metric-tint-3: #fff4e6;
     --metric-tint-4: #f8edff;
 
+    /* Peringatan (nilai mock biru, terisolasi untuk tone badge) */
+    --warn-bg: #fdf1da;
+    --warn-text: #a8650a;
+
     /* Type scale (7 anak tangga; penyeragaman 1px berlaku saat adopsi U3) */
     --text-xs: 11px;
     --text-sm: 12px;
