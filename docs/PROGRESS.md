@@ -41,10 +41,12 @@
 10. Secret `bb25c3f:.env.example` bocor → password Neon SUDAH dirotasi (dead). Jangan taruh secret di `.env.example` lagi.
 11. DOKU tetap dummy — jadi data real hanya bila dosen/pemilik minta (keputusan 6 Okt). Backend beku selama U1–U4.
 
-## Status terakhir (6 Okt 2026, PDF tab baru)
+## Status terakhir (6 Okt 2026, fondasi layout tokenize)
 
-- HEAD = `1803ede` (batch B commit, tree bersih sebelum batch ini). Batch ini BELUM commit: PDF tab baru (`reports/index` 1 baris) + sinkron PROGRESS (DOKU-dummy, HEAD).
-- Test 42/42 (174 assertions), pint passed (verifikasi 6 Okt, isolasi sqlite).
+- HEAD = `bfdf9a8` (PDF tab baru commit, tree bersih sebelum batch ini). Batch ini BELUM commit: tokenize `layouts/app` (0 hex tersisa) + 21 token semantik baru + 2 test token.
+- Test 44/44 (185 assertions), pint passed (verifikasi 6 Okt, isolasi sqlite — +2 test token U3).
+- Geser visual kontrak (disetujui U1): h1 27→28, h2 15→16, metrik 29→28, h1-mobile 23→24, radius nav 9→8. Selain itu nilai identik.
+- Antre: preview lokal fondasi (Anda, semua halaman sekilas) → commit → admin + notif-show → thumbnail → pagination/sisa → login ditunda.
 - Referensi mock `Notif & Komunikasi – Konsep Ulang.html`: pola diadopsi (search, kartu checkbox avatar, pratinjau live, char-count, Kirim disabled); palet/font mock DITOLAK (kontrak U1), channel tetap 3, riwayat tetap 7 kolom + Aksi.
 - Antre: preview lokal batch B (Anda) → commit → smoke staging → layout tokenize → admin + notif-show → thumbnail → pagination/sisa → login ditunda.
 

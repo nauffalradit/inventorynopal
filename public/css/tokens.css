@@ -24,6 +24,37 @@
     --danger-border: #fecaca;
     --danger-text: #991b1b;
 
+    /* Sidebar & navigasi (nilai layout lama, dipertahankan — U3 fondasi) */
+    --sidebar-ink: #dce4f4;
+    --nav-link: #aeb9cf;
+    --nav-label: #8290ad;
+    --avatar-bg: #354361;
+    --role-ink: #8997b3;
+    --brand-grad-1: #8584ff;
+    --brand-grad-2: #5859e7;
+
+    /* Tabel (nilai layout lama, dipertahankan) */
+    --table-head-ink: #8a94a8;
+    --table-head-bg: #fafbfe;
+    --table-line: #edf0f5;
+    --table-hover: #fcfcff;
+
+    /* Teks & kontrol sekunder (nilai layout lama, dipertahankan) */
+    --label-ink: #65728a;
+    --btn-ink: #536078;
+    --btn-hover-border: #cdd3e1;
+    --badge-ink: #5656bd;
+    --badge-bg: #f0f0ff;
+    --icon-ink: #63708a;
+    --focus-ring: #9292f1;
+    --progress-tip: #8b8cff;
+    --skeleton: #eef1f6;
+
+    /* Blob dekoratif metrik (nilai layout lama, dipertahankan) */
+    --metric-tint-2: #e9f8f3;
+    --metric-tint-3: #fff4e6;
+    --metric-tint-4: #f8edff;
+
     /* Type scale (7 anak tangga; penyeragaman 1px berlaku saat adopsi U3) */
     --text-xs: 11px;
     --text-sm: 12px;

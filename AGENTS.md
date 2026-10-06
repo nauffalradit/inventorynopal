@@ -52,3 +52,4 @@ Penting (gotchas):
 - Keputusan tercatat: (a) type scale 7 tangga, geser 1px diterima (15→16, 17→18, 23/24→24, 27/29→28); (b) radius 9px→8px (dead token, 1 pemakaian); (c) file terpisah, bukan `:root` di layout.
 - Koreksi: `--muted` dipertahankan `#7c879d` (nilai layout lama); unifikasi keluarga abu (`#65728a` dkk) ditunda ke U3. Token pendamping (`-bg/-border/-text`) aditif, belum dipakai layout lama.
 - Audit U1: 53 hex (duplikat-dekat `#ecfdf5/#ecfdf6`, `#fff/#ffffff`), 13 ukuran font, radius 8/9/10, 38 inline style di 11 file.
+- U3 fondasi (6 Okt): `layouts/app.blade.php` 0 hex tersisa + 21 token semantik baru di `tokens.css` (sidebar/nav/tabel/kontrol/metric). `DesignTokensTest` mengunci: token U3 ada + layout tanpa hex. rgba shadow/border-transparan sengaja literal (turunan accent/putih).

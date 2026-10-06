@@ -33,4 +33,20 @@ class DesignTokensTest extends TestCase
             $this->assertStringContainsString($token, $css);
         }
     }
+
+    public function test_tokens_file_defines_u3_layout_variables(): void
+    {
+        $css = (string) file_get_contents(public_path('css/tokens.css'));
+
+        foreach (['--sidebar-ink', '--nav-link', '--avatar-bg', '--table-head-bg', '--label-ink', '--btn-ink', '--badge-bg', '--success-bg', '--danger-bg', '--metric-tint-2'] as $token) {
+            $this->assertStringContainsString($token, $css);
+        }
+    }
+
+    public function test_layout_has_no_hardcoded_hex_colors(): void
+    {
+        $blade = (string) file_get_contents(resource_path('views/layouts/app.blade.php'));
+
+        $this->assertDoesNotMatchRegularExpression('/#[0-9a-fA-F]{3,6}\b/', $blade);
+    }
 }
