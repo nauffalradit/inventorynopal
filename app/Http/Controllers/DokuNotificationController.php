@@ -43,13 +43,9 @@ class DokuNotificationController extends Controller
         if ($status === 'paid') {
             DashboardController::flushDashboard();
             $uid = $payment->order->user_id ?? null;
+            OrderController::flushOrderCaches($uid);
             for ($i = 1; $i <= 20; $i++) {
                 Cache::forget("products:index:page:$i");
-                Cache::forget("orders:index:page:$i");
-                Cache::forget("orders:index:page:$i:all");
-                if ($uid) {
-                    Cache::forget("orders:index:page:$i:user:$uid");
-                }
             }
         }
 

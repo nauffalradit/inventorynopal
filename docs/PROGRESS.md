@@ -42,11 +42,10 @@
 10. Secret `bb25c3f:.env.example` bocor → password Neon SUDAH dirotasi (dead). Jangan taruh secret di `.env.example` lagi.
 11. DOKU tetap dummy — jadi data real hanya bila dosen/pemilik minta (keputusan 6 Okt). Backend beku selama U1–U4.
 
-## Status terakhir (6 Okt 2026, commit #1 oleh asisten + push OK)
+## Status terakhir (6 Okt 2026, commit #3: batch 2 list order kartu)
 
-- HEAD = `22db753` (batch 1 biru commit + push SSH berhasil — aturan git baru aktif).
-- Test 48/48 (198 assertions), pint passed.
-- Antre: batch 2 list order kartu + statistik (commit #2).
+- HEAD = `17a43c8`. Batch ini: agregat statistik order (scope admin/own, cache 30s, flush via `flushOrderCaches` di store/destroy/refresh/webhook) + list kartu + `OrderListTest`.
+- Test 52/52 (219 assertions), pint passed.
 - Referensi mock `Notif & Komunikasi – Konsep Ulang.html`: pola diadopsi (search, kartu checkbox avatar, pratinjau live, char-count, Kirim disabled); palet/font mock DITOLAK (kontrak U1), channel tetap 3, riwayat tetap 7 kolom + Aksi.
 - Antre: preview lokal batch B (Anda) → commit → smoke staging → layout tokenize → admin + notif-show → thumbnail → pagination/sisa → login ditunda.
 

@@ -20,12 +20,42 @@ class OrderController extends Controller
         $page = (int) request()->input('page', 1);
         if (Gate::allows('admin')) {
             $orders = Cache::remember("orders:index:page:$page:all", 30, fn () => Order::with('payments')->latest()->paginate(15));
+            $stats = Cache::remember('orders:stats:all', 30, fn () => self::statsFor(null));
         } else {
             $uid = auth()->id();
             $orders = Cache::remember("orders:index:page:$page:user:$uid", 30, fn () => Order::where('user_id', $uid)->with('payments')->latest()->paginate(15));
+            $stats = Cache::remember("orders:stats:user:$uid", 30, fn () => self::statsFor($uid));
         }
 
-        return view('orders.index', compact('orders'));
+        return view('orders.index', compact('orders', 'stats'));
+    }
+
+    /** Ringkasan list order; null $uid = semua order (admin). */
+    private static function statsFor(?int $uid): array
+    {
+        $base = Order::query()->when($uid !== null, fn ($q) => $q->where('user_id', $uid));
+
+        return [
+            'paid_sum' => (int) (clone $base)->where('status', 'paid')->sum('total_amount'),
+            'count' => (int) (clone $base)->count(),
+            'waiting' => (int) (clone $base)->where('status', '!=', 'paid')->count(),
+        ];
+    }
+
+    /** Flush list + statistik (dipanggil tiap mutasi order). */
+    public static function flushOrderCaches(?int $uid): void
+    {
+        Cache::forget('orders:stats:all');
+        if ($uid) {
+            Cache::forget("orders:stats:user:$uid");
+        }
+        for ($i = 1; $i <= 20; $i++) {
+            Cache::forget("orders:index:page:$i");
+            Cache::forget("orders:index:page:$i:all");
+            if ($uid) {
+                Cache::forget("orders:index:page:$i:user:$uid");
+            }
+        }
     }
 
     public function create()
@@ -53,11 +83,7 @@ class OrderController extends Controller
             return $order;
         });
         $uid = auth()->id();
-        for ($i = 1; $i <= 20; $i++) {
-            Cache::forget("orders:index:page:$i");
-            Cache::forget("orders:index:page:$i:user:$uid");
-            Cache::forget("orders:index:page:$i:all");
-        }
+        self::flushOrderCaches($uid);
 
         return to_route('orders.show', $order)->with('status', 'Order dibuat. Lanjutkan ke DOKU Checkout.');
     }
@@ -98,11 +124,7 @@ class OrderController extends Controller
         abort_if($order->status === 'paid', 422, 'Order berhasil tidak dapat dihapus.');
         $uid = $order->user_id;
         $order->delete();
-        for ($i = 1; $i <= 20; $i++) {
-            Cache::forget("orders:index:page:$i");
-            Cache::forget("orders:index:page:$i:user:$uid");
-            Cache::forget("orders:index:page:$i:all");
-        }
+        self::flushOrderCaches($uid);
 
         return to_route('orders.index')->with('status', 'Order dihapus.');
     }
@@ -134,11 +156,9 @@ class OrderController extends Controller
             });
             DashboardController::flushDashboard($order->user_id);
             $uid = $order->user_id;
+            self::flushOrderCaches($uid);
             for ($i = 1; $i <= 20; $i++) {
                 Cache::forget("products:index:page:$i");
-                Cache::forget("orders:index:page:$i");
-                Cache::forget("orders:index:page:$i:user:$uid");
-                Cache::forget("orders:index:page:$i:all");
             }
 
             return to_route('orders.show', $order)->with('status', 'Pembayaran berhasil dikonfirmasi dari DOKU.');
