@@ -2,6 +2,7 @@
 
 > Aturan pakai: update tiap tutup sesi (5 baris). Buka sesi baru: baca file ini + `git log --oneline -10` dulu.
 > Pemilik repo memegang git (commit/push manual). Tanpa `--force` ke `main`. Secret tidak pernah di repo.
+> Koreksi 6 Okt: asisten yang commit+push (maks 4 commit atomic/hari, message gaya repo). QA wajib per commit: view:clear → phpunit hijau → pint passed → status/diff bersih → baca ulang diff inti → tes visual pemilik. Merah = tidak ada commit.
 
 ## Konteks pemilik
 
@@ -41,12 +42,11 @@
 10. Secret `bb25c3f:.env.example` bocor → password Neon SUDAH dirotasi (dead). Jangan taruh secret di `.env.example` lagi.
 11. DOKU tetap dummy — jadi data real hanya bila dosen/pemilik minta (keputusan 6 Okt). Backend beku selama U1–U4.
 
-## Status terakhir (6 Okt 2026, batch 1 biru: komponen bersama)
+## Status terakhir (6 Okt 2026, commit #1 oleh asisten + push OK)
 
-- HEAD = `7b82f99` (fondasi layout commit, tree bersih sebelum batch ini). Batch ini BELUM commit: warn tokens + `x-badge tone` + `x-btn ghost/ghost-danger` + `x-stat` + `ComponentVariantsTest` + sesuaikan 1 assert checklist.
-- Test 48/48 (198 assertions), pint passed (verifikasi 6 Okt, isolasi sqlite — +4 test varian).
-- Fondasi `7b82f99` sudah commit (layout 0 hex, 21 token, geser kontrak h1 27→28/h2 15→16/metrik 29→28/nav 9→8).
-- Antre: preview komponen (Anda, via halaman notif/order lama — visual lama identik) → commit → batch 2 list order kartu + statistik.
+- HEAD = `22db753` (batch 1 biru commit + push SSH berhasil — aturan git baru aktif).
+- Test 48/48 (198 assertions), pint passed.
+- Antre: batch 2 list order kartu + statistik (commit #2).
 - Referensi mock `Notif & Komunikasi – Konsep Ulang.html`: pola diadopsi (search, kartu checkbox avatar, pratinjau live, char-count, Kirim disabled); palet/font mock DITOLAK (kontrak U1), channel tetap 3, riwayat tetap 7 kolom + Aksi.
 - Antre: preview lokal batch B (Anda) → commit → smoke staging → layout tokenize → admin + notif-show → thumbnail → pagination/sisa → login ditunda.
 
