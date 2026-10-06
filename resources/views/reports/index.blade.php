@@ -20,7 +20,7 @@
                 <td>{{ $report->generated_at?->format('d M Y H:i') ?: '-' }}</td>
                 <td>
                     @if ($report->status === 'completed')
-                        <x-btn href="{{ route('reports.show', $report) }}">Buka PDF</x-btn>
+                        <x-btn href="{{ route('reports.show', $report) }}" target="_blank" rel="noopener">Buka PDF</x-btn>
                     @else
                         <span class="muted">Menunggu diproses</span>
                     @endif
